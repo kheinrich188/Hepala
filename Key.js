@@ -43,10 +43,7 @@ function Key(frame){
 };
 
 var newKey = new Key(RectMake(0,0,20,20));
-alert(newKey.frame.widht);
-newKey.setValue("Hi");
 
-alert(newKey.value);
 
 
 
