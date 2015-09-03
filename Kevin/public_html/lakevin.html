@@ -1,0 +1,80 @@
+<html>
+	<title>Example</title>
+<head>
+</head>
+<body>
+	<input type="button" value="Lade Simulation" onclick="welt(70)">
+	<script>
+		function welt(n)
+		{
+			var anzahl;
+			var result = "";
+			var a = new Array(100);
+			var b = new Array(100);
+
+			for(var i = 0; i < a.length; i++)
+			{
+				a[i] = Math.floor((Math.random() * 2));
+				
+				if(a[i] === 0)
+				{
+					result += " ";
+				}
+				else if(a[i] === 1)
+				{
+					result += "+";
+				}           
+				b[i] = a[i];  
+			}
+			result += "<br>";
+
+			for(var i = 0; i < n; i++)
+			{
+				for(var j = 0; j < b.length; j++)
+				{
+					anzahl = 0;
+
+					if(j === 0)
+					{
+						anzahl = (a[j] + a[j + 1] + a[j + 2]);
+					}
+					else if(j === 1)
+					{
+						anzahl = (a[j - 1] + a[j] + a[j + 1] + a[j + 2]);
+					}
+					else if(j >= 2 && j <= 97)
+					{
+						anzahl = (a[j - 2] + a[j - 1] + a[j] + a[j + 1] + a[j + 2]);
+					}
+					else if(j === 98)
+					{
+						anzahl = (a[j - 2] + a[j - 1] + a[j] + a[j + 1]);
+					}
+					else if(j === 99)
+					{
+						anzahl = (a[j - 2] + a[j - 1] + a[j]);
+					}
+
+					//document.write(b[j]);
+					if(anzahl === 2 || anzahl === 4)
+					{
+						b[j] = 1;
+						result += "+";
+					}               
+					else
+					{
+						b[j] = 0;
+						result += " ";
+					}         
+				}
+				for (var k = 0; k < a.length; k++)
+				{
+					a[k] = b[k];
+				}
+				result += "<br>";
+			}
+			document.write("<pre>" + result + "</pre>");
+		}
+	</script>
+</body>
+</html>
