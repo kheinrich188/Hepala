@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
 <html>
 	<head>
 		<title>My first Three.js app</title>
@@ -16,42 +22,30 @@
                     renderer.setSize(window.innerWidth, window.innerHeight);
                     renderer.setClearColor(0x555555);
                     document.body.appendChild( renderer.domElement );
-
-                    var cylinderGeometry = new THREE.CylinderGeometry(10, 10, 30, 32); 
-                    var boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-                    var material = new THREE.MeshBasicMaterial({color: 0xffff00}); 
                     
-                    var cubeCylinder = new THREE.Mesh(cylinderGeometry, material);
-                    var cubeBox = new THREE.Mesh(boxGeometry, material);
-                    scene.add(cubeCylinder);
-                    scene.add(cubeBox);
-                    camera.position.z = 50;
-                    var vor = true;
+                    var floorGeometry = new THREE.BoxGeometry( 10, 1, 10 );
+                    var floorMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                    var floor = new THREE.Mesh( floorGeometry, floorMaterial );
+                    
+                    var wallGeometry1 = new THREE.BoxGeometry( 10, 1, 10 );
+                    var wallMaterial1 = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                    var wall1 = new THREE.Mesh( wallGeometry1, wallGeometry1 );
+                    
+                    scene.add(floor);
+                    scene.add(wall1);
+                    
+                    camera.position.set(0,11,0);
+                    camera.up = new THREE.Vector3(1,0,0);
+                    camera.lookAt(new THREE.Vector3(0,0,0));
+                    
                     var render = function () {
-                        requestAnimationFrame( render );
-                       
-                        
-                        if(vor){
-                            camera.position.z -= 1; 
-                            if(camera.position.z==1){
-                                vor = false;
-                            }
-                        }
-                        else{
-                            camera.position.z += 1;
-                            if(camera.position.z==100){
-                                vor = true;
-                            }
-                        }
-                        cubeBox.rotation.x += 0.01;
-                        cubeBox.rotation.y += 0.01;
+                            requestAnimationFrame( render );
 
-                        cubeCylinder.rotation.x += 0.1;
-                        cubeCylinder.rotation.y += 0.1;
-                        renderer.render(scene, camera);
+                            renderer.render(scene, camera);
                     };
-
                     render();
+
+
 		</script>
 	</body>
 </html>
