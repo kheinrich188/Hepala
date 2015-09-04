@@ -13,40 +13,78 @@ and open the template in the editor.
 		</style>
 	</head>
 	<body>
+                <div id="box" style="position:absolute;top:0;left:0;"></div>
 		<script src="js/libs/three.min.js"></script>
 		<script>
                     var scene = new THREE.Scene();
-                    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+                    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 51);
 
                     var renderer = new THREE.WebGLRenderer();
                     renderer.setSize(window.innerWidth, window.innerHeight);
                     renderer.setClearColor(0x555555);
                     document.body.appendChild( renderer.domElement );
                     
+                    THREE.PerspectiveCamera.prototype.setRotateX = function( deg ){
+                    if ( typeof( deg ) == 'number' && parseInt( deg ) == deg ){
+                        this.rotation.x = deg * ( Math.PI / 180 );
+                    }
+                    };
+                    THREE.PerspectiveCamera.prototype.setRotateY = function( deg ){
+                        if ( typeof( deg ) == 'number' && parseInt( deg ) == deg ){
+                            this.rotation.y = deg * ( Math.PI / 180 );
+                        }
+                    };
+                    THREE.PerspectiveCamera.prototype.setRotateZ = function( deg ){
+                        if ( typeof( deg ) == 'number' && parseInt( deg ) == deg ){
+                            this.rotation.z = deg * ( Math.PI / 180 );
+                        }
+                    };
+                    THREE.PerspectiveCamera.prototype.getRotateX = function(){
+                        return Math.round( this.rotation.x * ( 180 / Math.PI ) );
+                    };
+                    THREE.PerspectiveCamera.prototype.getRotateY = function(){
+                        return Math.round( this.rotation.y * ( 180 / Math.PI ) );
+                    };
+                    THREE.PerspectiveCamera.prototype.getRotateZ = function(){
+                        return Math.round( this.rotation.z * ( 180 / Math.PI ) );
+                    };
+
+                    function render() {
+                        renderer.render(scene, camera);
+                        requestAnimationFrame(render);
+                    }                    
+                      
+                    function toBox( x, y, z )
+                    {
+                        document.getElementById('box').innerHTML = 'X: ' + x + '<br />Y: ' + y + '<br />Z: ' + z;
+                    }
+                    
+                   
+                    
                     var floorGeometry = new THREE.BoxGeometry( 100, 1, 100 );
-                    var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+                    var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff} );
                     var floor = new THREE.Mesh( floorGeometry, floorMaterial );
                     
                     var wallGeometry1 = new THREE.BoxGeometry( 100, 50, 1 );
-                    var wallMaterial1 = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                    var wallMaterial1 = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
                     var wall1 = new THREE.Mesh( wallGeometry1, wallMaterial1 );
                     wall1.translateZ(50);
                     wall1.translateY(25);
 
                     var wallGeometry2 = new THREE.BoxGeometry( 100, 50, 1 );
-                    var wallMaterial2 = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+                    var wallMaterial2 = new THREE.MeshBasicMaterial( { color: 0x0000ff} );
                     var wall2 = new THREE.Mesh( wallGeometry2, wallMaterial2 );
                     wall2.translateZ(-50);
                     wall2.translateY(25);
                     
                     var wallGeometry3 = new THREE.BoxGeometry( 1, 50, 100 );
-                    var wallMaterial3 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+                    var wallMaterial3 = new THREE.MeshBasicMaterial( { color: 0xff0000} );
                     var wall3 = new THREE.Mesh( wallGeometry3, wallMaterial3 );
                     wall3.translateX(50);
                     wall3.translateY(25);    
                     
                     var wallGeometry4 = new THREE.BoxGeometry( 1, 50, 100 );
-                    var wallMaterial4 = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
+                    var wallMaterial4 = new THREE.MeshBasicMaterial( { color: 0x00ffff} );
                     var wall4 = new THREE.Mesh( wallGeometry4, wallMaterial4 );
                     wall4.translateX(-50);
                     wall4.translateY(25);   
@@ -57,18 +95,71 @@ and open the template in the editor.
                     scene.add(wall3);
                     scene.add(wall4);
                     
-                    camera.position.set(0,130,0);
-                    camera.up = new THREE.Vector3(0,1,0);
-                    camera.lookAt(new THREE.Vector3(0,0,0));
-                    
-                    var render = function () {
-                            requestAnimationFrame( render );
+                    camera.position.set(0,5,0);
 
-                            renderer.render(scene, camera);
-                    };
+                    const KEYUP             = 38;        // up key
+                    const KEYDOWN             = 40;        // down key
+                    const KEYLEFT             = 37;        // left key
+                    const KEYRIGHT            = 39;        // right key
+                    const Z_ROT_INC            = 81;
+                    const Z_ROT_DEC            = 87;
+                    const VIEW_INCREMENT    = 5;        // amount to move in degrees
+
+                    toBox( camera.getRotateX(), camera.getRotateY(), camera.getRotateZ() );
+
                     render();
 
+                    document.addEventListener('keydown', function(e)
+                    {
+                        var key = e.keyCode;
+                        console.log(key);
 
+                        switch( key )
+                        {
+                            case KEYUP:
+
+                                // x increments, z depends of current y
+
+                                if ( camera.getRotateX() < 90 )
+                                {
+                                    camera.setRotateX( camera.getRotateX() + VIEW_INCREMENT );
+                                }
+                                break;
+
+                            case KEYDOWN:
+
+                                if ( camera.getRotateX() > -90 )
+                                {
+                                    camera.setRotateX( camera.getRotateX() - VIEW_INCREMENT );
+                                }
+                                break;
+
+                            case KEYLEFT:
+
+                                camera.setRotateY( camera.getRotateY() + VIEW_INCREMENT );
+                                break;
+
+                            case KEYRIGHT:
+
+                                camera.setRotateY( camera.getRotateY() - VIEW_INCREMENT );
+                                break;
+
+                            case Z_ROT_INC:
+
+                                camera.setRotateZ( camera.getRotateZ() + VIEW_INCREMENT );
+                                break;
+
+                            case Z_ROT_DEC:
+
+                                camera.setRotateZ( camera.getRotateZ() - VIEW_INCREMENT );
+                                break;
+
+                        }
+
+                        toBox( camera.getRotateX(), camera.getRotateY(), camera.getRotateZ() );
+
+                    });
 		</script>
+
 	</body>
 </html>
