@@ -1,0 +1,77 @@
+<html>
+	<head>
+		<title>My first Three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="js/libs/three.min.js"></script>
+                <script>
+                    //MAIN
+                    var scene = new THREE.Scene();
+                    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+                    var renderer = new THREE.WebGLRenderer();
+                    renderer.setSize( window.innerWidth, window.innerHeight );
+                    renderer.setClearColor(0x555555);
+                    document.body.appendChild( renderer.domElement );
+                    
+                    
+                    //Constanten
+                    var KEYUP     = 38;       // up key
+                    var KEYDOWN   = 40;       // down key
+                    var KEYLEFT   = 37;       // left key
+                    var KEYRIGHT  = 39;       // right key
+
+
+
+                    var floorGeo = new THREE.BoxGeometry( 500, 0.1, 500 );
+                    var floorMat = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                    var floor = new THREE.Mesh( floorGeo, floorMat );
+                    scene.add( floor );
+                    
+                    var coverGeo = new THREE.BoxGeometry( 500, 0.1, 500 );
+                    var coverMat = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                    var cover = new THREE.Mesh( coverGeo, coverMat );
+                    scene.add( cover );
+
+                    camera.position.z = 300;
+                    floor.position.y = -300;
+                    cover.position.y = 300;
+                    
+                    
+                    var render = function () {
+                        requestAnimationFrame( render );
+                        
+                        renderer.render(scene, camera);
+                    };
+                    render();
+                    
+                    document.addEventListener('keydown', function(e)
+                    {
+                        var key = e.keyCode;
+                        //console.log(key);
+
+                        if (key === KEYUP) {
+                            camera.position.y += 30;
+                            console.log("up");
+                        }
+                        else if (key === KEYDOWN) {
+                            camera.position.y -= 30;
+                            console.log("down");
+                        }
+                        else if (key === KEYLEFT ) {
+                           camera.position.x -= 30;
+                           console.log("left");
+                        }
+                        else if (key === KEYRIGHT ) {
+                           camera.position.x += 30;
+                           console.log("right");
+                        }
+
+                    });
+                </script>
+	</body>
+</html>
