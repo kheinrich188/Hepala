@@ -17,7 +17,7 @@ and open the template in the editor.
 		<script src="js/libs/three.min.js"></script>
 		<script>
                     var scene = new THREE.Scene();
-                    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 10);
+                    var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 30);
 
                     var renderer = new THREE.WebGLRenderer();
                     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -61,49 +61,73 @@ and open the template in the editor.
                     
                    
                     
-                    var floorGeometry = new THREE.BoxGeometry( 10, 1, 10 );
+                    var floorGeometry = new THREE.BoxGeometry( 30, 1, 30 );
                     var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true} );
                     var floor = new THREE.Mesh( floorGeometry, floorMaterial );
                     
-                    var wallGeometry1 = new THREE.BoxGeometry( 10, 5, 1 );
+                    var wallGeometry1 = new THREE.BoxGeometry( 30, 15, 1 );
                     var wallMaterial1 = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true} );
                     var wall1 = new THREE.Mesh( wallGeometry1, wallMaterial1 );
-                    wall1.translateZ(5);
-                    wall1.translateY(3);
 
-                    var wallGeometry2 = new THREE.BoxGeometry( 10, 5, 1 );
+
+                    var wallGeometry2 = new THREE.BoxGeometry( 30, 15, 1 );
                     var wallMaterial2 = new THREE.MeshBasicMaterial( { color: 0x0000ff, wireframe: true} );
                     var wall2 = new THREE.Mesh( wallGeometry2, wallMaterial2 );
-                    wall2.translateZ(-5);
-                    wall2.translateY(3);
+
                     
-                    var wallGeometry3 = new THREE.BoxGeometry( 1, 5, 10 );
+                    var wallGeometry3 = new THREE.BoxGeometry( 1, 15, 30 );
                     var wallMaterial3 = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true} );
                     var wall3 = new THREE.Mesh( wallGeometry3, wallMaterial3 );
-                    wall3.translateX(5);
-                    wall3.translateY(3);    
+    
                     
-                    var wallGeometry4 = new THREE.BoxGeometry( 1, 5, 10 );
+                    var wallGeometry4 = new THREE.BoxGeometry( 1, 15, 30 );
                     var wallMaterial4 = new THREE.MeshBasicMaterial( { color: 0x00ffff, wireframe: true} );
                     var wall4 = new THREE.Mesh( wallGeometry4, wallMaterial4 );
-                    wall4.translateX(-5);
-                    wall4.translateY(3);   
+                    
+                    var tableFootGeometry = new THREE.CylinderGeometry(1,1,1);
+                    var tableFootMaterial = new THREE.MeshBasicMaterial({ color: 0x00f0f0})
+                    var tableFoot = new THREE.Mesh(tableFootGeometry, tableFootMaterial);
+                    
+                    var tableGeometry = new THREE.BoxGeometry(3,1,1);
+                    var tableMaterial = new THREE.MeshBasicMaterial({ color: 0xf0ff00})
+                    var table = new THREE.Mesh(tableGeometry, tableMaterial);                    
+                    
+                    tableFoot.translateY(1);
+                    
+                    table.translateY(2);
+                    
+                    wall1.translateZ(15);
+                    wall1.translateY(8);                    
+                    
+                    wall2.translateZ(-15);
+                    wall2.translateY(8);
     
+                    //wall3.translateX(0);
+                    //wall3.translateY(8);
+    
+                    wall3.translateX(15);
+                    wall3.translateY(8);                    
+    
+                    wall4.translateX(-15);
+                    wall4.translateY(8);   
+    
+                    scene.add(tableFoot);
+                    scene.add(table);
                     scene.add(floor);
                     scene.add(wall1);
                     scene.add(wall2);
                     scene.add(wall3);
                     scene.add(wall4);
                     
-                    camera.position.set(0,2,0);
+                    camera.position.set(0,4,5);
 
                     const KEYUP             = 38;        // up key
                     const KEYDOWN             = 40;        // down key
                     const KEYLEFT             = 37;        // left key
                     const KEYRIGHT            = 39;        // right key
                     const Z_ROT_INC            = 81;
-                    const Z_ROT_DEC            = 87;
-                    const KEYW = 199;
+                    const Z_ROT_DEC            = 69;
+                    const KEYW = 87;
                     const KEYQ = 83;                    
                     const VIEW_INCREMENT    = 5;        // amount to move in degrees
 
@@ -157,12 +181,12 @@ and open the template in the editor.
                                 break;
                             case KEYW:
 
-                                camera.positionY += 1;
+                                camera.position.z += 1;
                                 break;
 
                             case KEYQ:
 
-                                camera.positionY -= 1;
+                                camera.position.z -= 1;
                                 break;                                 
 
                         }
