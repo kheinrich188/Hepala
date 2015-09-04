@@ -23,20 +23,41 @@ and open the template in the editor.
                     renderer.setClearColor(0x555555);
                     document.body.appendChild( renderer.domElement );
                     
-                    var floorGeometry = new THREE.BoxGeometry( 10, 1, 10 );
-                    var floorMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+                    var floorGeometry = new THREE.BoxGeometry( 100, 1, 100 );
+                    var floorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
                     var floor = new THREE.Mesh( floorGeometry, floorMaterial );
                     
-                    var wallGeometry1 = new THREE.BoxGeometry( 10, 5, 1 );
+                    var wallGeometry1 = new THREE.BoxGeometry( 100, 50, 1 );
                     var wallMaterial1 = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
                     var wall1 = new THREE.Mesh( wallGeometry1, wallMaterial1 );
-                    wall1.translateZ(5);
-                    wall1.translateY(2);
+                    wall1.translateZ(50);
+                    wall1.translateY(25);
+
+                    var wallGeometry2 = new THREE.BoxGeometry( 100, 50, 1 );
+                    var wallMaterial2 = new THREE.MeshBasicMaterial( { color: 0x0000ff } );
+                    var wall2 = new THREE.Mesh( wallGeometry2, wallMaterial2 );
+                    wall2.translateZ(-50);
+                    wall2.translateY(25);
                     
+                    var wallGeometry3 = new THREE.BoxGeometry( 1, 50, 100 );
+                    var wallMaterial3 = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+                    var wall3 = new THREE.Mesh( wallGeometry3, wallMaterial3 );
+                    wall3.translateX(50);
+                    wall3.translateY(25);    
+                    
+                    var wallGeometry4 = new THREE.BoxGeometry( 1, 50, 100 );
+                    var wallMaterial4 = new THREE.MeshBasicMaterial( { color: 0x00ffff } );
+                    var wall4 = new THREE.Mesh( wallGeometry4, wallMaterial4 );
+                    wall4.translateX(-50);
+                    wall4.translateY(25);   
+    
                     scene.add(floor);
                     scene.add(wall1);
+                    scene.add(wall2);
+                    scene.add(wall3);
+                    scene.add(wall4);
                     
-                    camera.position.set(20,0,0);
+                    camera.position.set(0,130,0);
                     camera.up = new THREE.Vector3(0,1,0);
                     camera.lookAt(new THREE.Vector3(0,0,0));
                     
