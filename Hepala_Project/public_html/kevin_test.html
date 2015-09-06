@@ -25,14 +25,13 @@
                     //Constanten
                     var KEYUP     = 38;       // up key
                     var KEYDOWN   = 40;       // down key
-                    var KEYROTLEFT  = 37;       // up key
-                    var KEYROTRIGHT = 39;       // up key
-                    var KEYLEFT   = 65;       // left key
-                    var KEYRIGHT  = 68;       // right key
-                    var KEYFORWARD  = 87;       // forward key
-                    var KEYBACKWARD = 83;       // backward key
+                    var KEYLEFT   = 65;       // 'A'-key left rotation
+                    var KEYRIGHT  = 68;       // 'D'-key right rotation
+                    var KEYFORWARD  = 87;       // 'W'-key: forward
+                    var KEYBACKWARD = 83;       // 'S'-key: backward
+                    var KEYRESET    = 82;       // 'R'-key for Reset
 
-                    var CAMARAMOVE = 4;
+                    var CAMARAMOVE = 3;
 
 
 
@@ -41,8 +40,11 @@
             //###############################################################
 
                     //Room_Floor_Cover_Walls
+                    var floorTexture = new THREE.ImageUtils.loadTexture( 'images/wood-floor.jpg' );
+                    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+                    floorTexture.repeat.set( 10, 10 );
                     var floorGeo = new THREE.BoxGeometry( 600, 1, 600 );
-                    var floorMat = new THREE.MeshBasicMaterial( { color: 0x878787 } );
+                    var floorMat = new THREE.MeshBasicMaterial( { map: floorTexture } );
                     var floor = new THREE.Mesh( floorGeo, floorMat );
                     scene.add( floor );
                     
@@ -148,44 +150,53 @@
                     {
                         var key = e.keyCode;
                         console.log(key);
-
+                        
+                        if (key === KEYFORWARD ) {
+                            if(camera.position.z >= 295)
+                                camera.position.z = 295;
+                            if(camera.position.x >= 295)
+                                camera.position.x = 295;
+                            if(camera.position.z <= -295)
+                                camera.position.z = -295;
+                            if(camera.position.x <= -295)
+                                camera.position.x = -295;
+                            camera.translateZ( -CAMARAMOVE );
+                            console.log("forward");
+                        }
+                        if (key === KEYBACKWARD ) {
+                            if(camera.position.z >= 295)
+                                camera.position.z = 295;
+                            if(camera.position.x >= 295)
+                                camera.position.x = 295;
+                            if(camera.position.z <= -295)
+                                camera.position.z = -295;
+                            if(camera.position.x <= -295)
+                                camera.position.x = -295;
+                            camera.translateZ( CAMARAMOVE );
+                            console.log("backward");
+                        }
+                        if (key === KEYLEFT ) {
+                                camera.rotation.y += 0.08;
+                            console.log("left_rot");
+                        }
+                        if (key === KEYRIGHT ) {
+                                camera.rotation.y -= 0.08;
+                            console.log("right_rot");
+                        }
                         if (key === KEYUP) {
                             if(camera.position.y < 205)
                                 camera.position.y += CAMARAMOVE;
                             console.log("up");
                         }
-                        else if (key === KEYDOWN) {
+                        if (key === KEYDOWN) {
                             if(camera.position.y > 55)
                                 camera.position.y -= CAMARAMOVE;
                             console.log("down");
                         }
-                        else if (key === KEYROTLEFT) {
-                            camera.rotation.y += 0.05;
-                            console.log("left rotation");
-                        }
-                        else if (key === KEYROTRIGHT) {
-                            camera.rotation.y -= 0.05;
-                            console.log("right rotation");
-                        }
-                        else if (key === KEYLEFT ) {
-                            if(camera.position.x > -295)
-                                camera.position.x -= CAMARAMOVE;
-                            console.log("left");
-                        }
-                        else if (key === KEYRIGHT ) {
-                            if(camera.position.x < 295)
-                                camera.position.x += CAMARAMOVE;
-                            console.log("right");
-                        }
-                        else if (key === KEYFORWARD ) {
-                            if(camera.position.z > -295)
-                                camera.position.z -= CAMARAMOVE;
-                            console.log("forward");
-                        }
-                        else if (key === KEYBACKWARD ) {
-                            if(camera.position.z < 295)
-                                camera.position.z += CAMARAMOVE;
-                            console.log("backward");
+                        if (key === KEYRESET) {
+                            camera.position.y = 150;
+                            camera.position.z = 280;
+                            camera.rotation.y = 0;
                         }
                     });
                 </script>
