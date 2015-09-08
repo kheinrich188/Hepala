@@ -1,0 +1,244 @@
+<html>
+    <head>
+        <title>My first Three.js app</title>
+        <style>
+            body { margin: 0; }
+            canvas { width: 100%; height: 100% }
+        </style>
+    </head>
+    <body>
+        <script src="js/libs/jquery-2.1.4.js"></script>
+        <script src="js/libs/jQuery.MouseWheel.js"></script>
+        <script src="js/libs/jQuery.MouseHolded.js"></script>
+        <script src="js/libs/three.min.js"></script>
+        <script>
+
+            $(document).ready(function() {
+
+                var scene = new THREE.Scene();
+                var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+                var renderer = new THREE.WebGLRenderer();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setClearColor(0x555555);
+                document.body.appendChild(renderer.domElement);
+
+                //Constanten
+                var KEYUP = 38;       // up key
+                var KEYDOWN = 40;       // down key
+                var KEYROTLEFT = 37;       // up key
+                var KEYROTRIGHT = 39;       // up key
+                var KEYLEFT = 65;       // left key
+                var KEYRIGHT = 68;       // right key
+                var KEYFORWARD = 87;       // forward key
+                var KEYBACKWARD = 83;       // backward key
+                var CAMARAMOVE = 4;
+
+
+
+                //#################################################################
+                //##  3D Objects
+                //###############################################################
+
+                //Room_Floor_Cover_Walls
+                var floorGeo = new THREE.BoxGeometry(600, 1, 600);
+                var floorMat = new THREE.MeshBasicMaterial({color: 0x878787});
+                var floor = new THREE.Mesh(floorGeo, floorMat);
+                scene.add(floor);
+
+                var coverGeo = new THREE.BoxGeometry(600, 1, 600);
+                var coverMat = new THREE.MeshBasicMaterial({color: 0x979797});
+                var cover = new THREE.Mesh(coverGeo, coverMat);
+                scene.add(cover);
+
+                var wallGeo1 = new THREE.BoxGeometry(600, 300, 1);
+                var wallMat1 = new THREE.MeshBasicMaterial({color: 0xcdcdcd});
+                var wall1 = new THREE.Mesh(wallGeo1, wallMat1);
+                scene.add(wall1);
+
+                var wallGeo2 = new THREE.BoxGeometry(600, 300, 1);
+                var wallMat2 = new THREE.MeshBasicMaterial({color: 0x333333});
+                var wall2 = new THREE.Mesh(wallGeo2, wallMat2);
+                scene.add(wall2);
+
+                var wallGeo3 = new THREE.BoxGeometry(1, 300, 600);
+                var wallMat3 = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
+                var wall3 = new THREE.Mesh(wallGeo3, wallMat3);
+                scene.add(wall3);
+
+                var wallGeo4 = new THREE.BoxGeometry(1, 300, 600);
+                var wallMat4 = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
+                var wall4 = new THREE.Mesh(wallGeo4, wallMat4);
+                scene.add(wall4);
+
+                //Table & Table Legs
+                var tableGeo = new THREE.BoxGeometry(140, 5, 180);
+                var tableMat = new THREE.MeshBasicMaterial({color: 0x5555ff});
+                var table = new THREE.Mesh(tableGeo, tableMat);
+                scene.add(table);
+                var tableLeg1Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+                var tableLeg1Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
+                var tableLeg1 = new THREE.Mesh(tableLeg1Geo, tableLeg1Mat);
+                scene.add(tableLeg1);
+                var tableLeg2Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+                var tableLeg2Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
+                var tableLeg2 = new THREE.Mesh(tableLeg2Geo, tableLeg2Mat);
+                scene.add(tableLeg2);
+                var tableLeg3Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+                var tableLeg3Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
+                var tableLeg3 = new THREE.Mesh(tableLeg3Geo, tableLeg3Mat);
+                scene.add(tableLeg3);
+                var tableLeg4Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+                var tableLeg4Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
+                var tableLeg4 = new THREE.Mesh(tableLeg4Geo, tableLeg4Mat);
+                scene.add(tableLeg4);
+
+                var light = new THREE.PointLight(0xff0000, 1, 100);
+                light.position.set(50, 50, 50);
+                scene.add(light);
+
+                camera.position.y = 150;
+                camera.position.z = 280;
+
+                cover.position.y = 300;
+
+                wall1.position.y = 150;
+                wall1.position.z = -300;
+
+                wall2.position.y = 150;
+                wall2.position.z = 300;
+
+                wall3.position.y = 150;
+                wall3.position.x = 300;
+
+                wall4.position.y = 150;
+                wall4.position.x = -300;
+
+                table.position.x = 180;
+                table.position.y = 100;
+
+                tableLeg1.position.x = 130;
+                tableLeg1.position.y = 50;
+                tableLeg1.position.z = 60;
+
+                tableLeg2.position.x = 130;
+                tableLeg2.position.y = 50;
+                tableLeg2.position.z = -60;
+
+                tableLeg3.position.x = 230;
+                tableLeg3.position.y = 50;
+                tableLeg3.position.z = 60;
+
+                tableLeg4.position.x = 230;
+                tableLeg4.position.y = 50;
+                tableLeg4.position.z = -60;
+
+                //#################################################################
+                //##  Functions
+                //###############################################################
+
+                //Renderer
+                var render = function() {
+                    requestAnimationFrame(render);
+                    renderer.render(scene, camera);
+
+                };
+                render();
+
+
+                $(window).bind('mousemove', function(e) {
+                    camera.position.y = e.pageY / 2;
+                    camera.position.x = e.pageX - 1024;
+                    console.log("e.pageX: " + e.pageX + ", e.pageY: " + e.pageY);
+                    console.log("cameraX: " + camera.position.x + ", cameraY: " + camera.position.y, " cameraZ: " + camera.position.z);
+                    console.log("innerHeight " + window.innerHeight + ", innerWidth " + window.innerWidth);
+                });
+                
+
+                var wheelCounter = 0;
+                var defaultCameraPostion = {
+                    x: camera.position.x,
+                    y: camera.position.y,
+                    z: camera.position.z
+                };
+                var sceneFaults = {
+                    maxZ: 2
+
+                };
+                
+                function gradToRad(grad){
+                    return grad * 0.017453292519943;
+                }
+                function radToGrad(rad){
+                    return rad * 57.295779513082;
+                }
+                $(document).on('mousewheel', function(event) {
+                    if (event.deltaY > 0) {
+                        wheelCounter++;
+                        camera.position.z -= wheelCounter;
+                        console.log("Grad in Rad" + wheelCounter + " = " + gradToRad(wheelCounter));
+                        camera.rotation.y = -gradToRad(wheelCounter*1.5);
+                        console.log(camera.position.z);
+
+                    }
+                    else {
+                        wheelCounter--;
+                        camera.position.z += wheelCounter;
+                        camera.rotation.y = -gradToRad(wheelCounter*1.5);
+                        console.log("Spin out");
+                    }
+
+                    //console.log(event.deltaX, event.deltaY, event.deltaFactor, wheelCounter);
+                });
+                cameraFadeIn();
+
+                //KeyInputListener
+                document.addEventListener('keydown', function(e)
+                {
+                    var key = e.keyCode;
+                    console.log(key);
+
+                    if (key === KEYUP) {
+                        if (camera.position.y < 205)
+                            camera.position.y += CAMARAMOVE;
+                        console.log("up");
+                    }
+                    else if (key === KEYDOWN) {
+                        if (camera.position.y > 55)
+                            camera.position.y -= CAMARAMOVE;
+                        console.log("down");
+                    }
+                    else if (key === KEYROTLEFT) {
+                        camera.rotation.y += 0.05;
+                        console.log("left rotation");
+                    }
+                    else if (key === KEYROTRIGHT) {
+                        camera.rotation.y -= 0.05;
+                        console.log("right rotation");
+                    }
+                    else if (key === KEYLEFT) {
+                        if (camera.position.x > -295)
+                            camera.position.x -= CAMARAMOVE;
+                        console.log("left");
+                    }
+                    else if (key === KEYRIGHT) {
+                        if (camera.position.x < 295)
+                            camera.position.x += CAMARAMOVE;
+                        console.log("right");
+                    }
+                    else if (key === KEYFORWARD) {
+                        if (camera.position.z > -295)
+                            camera.position.z -= CAMARAMOVE;
+                        console.log("forward");
+                    }
+                    else if (key === KEYBACKWARD) {
+                        if (camera.position.z < 295)
+                            camera.position.z += CAMARAMOVE;
+                        console.log("backward");
+                    }
+                });
+            });
+
+        </script>
+    </body>
+</html>
