@@ -12,37 +12,45 @@
                 <script>
                     
             //#################################################################
-            //##  Main/Core
+            //##  MAIN/CORE
             //###############################################################
-            
+                    
+                    //scene
                     var scene = new THREE.Scene();
+                    //amera
                     var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-                    var keyboard = new THREEx.KeyboardState();
-
+                    //renderer
                     var renderer = new THREE.WebGLRenderer();
                     renderer.setSize( window.innerWidth, window.innerHeight );
                     renderer.setClearColor(0x555555);
                     document.body.appendChild( renderer.domElement );
                     
-                    //Constanten
+                    //global
+                    var clock = new THREE.Clock();
+                    var keyboard = new THREEx.KeyboardState();
+                    
+                    //constanten
+                    var CAMERAMOVE = 3;
+                    var CAMERAROT = 0.04;
+                    
                     var KEYUP     = 38;       // up key
                     var KEYDOWN   = 40;       // down key
-                    var KEYLEFT   = 65;       // 'A'-key left rotation
-                    var KEYRIGHT  = 68;       // 'D'-key right rotation
-                    var KEYFORWARD  = 87;       // 'W'-key: forward
-                    var KEYBACKWARD = 83;       // 'S'-key: backward
-                    var KEYRESET    = 82;       // 'R'-key for Reset
+                    //var KEYLEFT   = 65;       // 'A'-key left rotation
+                    //var KEYRIGHT  = 68;       // 'D'-key right rotation
+                    //var KEYFORWARD  = 87;       // 'W'-key: forward
+                    //var KEYBACKWARD = 83;       // 'S'-key: backward
+                    //var KEYRESET    = 82;       // 'R'-key for Reset
 
-                    var CAMERAMOVE = 5;
-                    var CAMERAROT = 0.08;
+                    
 
 
 
             //#################################################################
-            //##  3D Objects
+            //##  3D OBJECTS
             //###############################################################
 
-                    //Room_Floor_Cover_Walls
+                /*******   ROOM   *******/
+                    //floor
                     var floorTexture = new THREE.ImageUtils.loadTexture( 'images/wood-floor.jpg' );
                     floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
                     floorTexture.repeat.set( 10, 10 );
@@ -50,33 +58,31 @@
                     var floorMat = new THREE.MeshBasicMaterial( { map: floorTexture } );
                     var floor = new THREE.Mesh( floorGeo, floorMat );
                     scene.add( floor );
-                    
+                    //cover
                     var coverGeo = new THREE.BoxGeometry( 600, 1, 600 );
                     var coverMat = new THREE.MeshBasicMaterial( { color: 0x979797 } );
                     var cover = new THREE.Mesh( coverGeo, coverMat );
                     scene.add( cover );
                     
+                    //walls
                     var wallGeo1 = new THREE.BoxGeometry( 600, 300, 1 );
                     var wallMat1 = new THREE.MeshBasicMaterial( { color: 0xcdcdcd} );
                     var wall1 = new THREE.Mesh( wallGeo1, wallMat1 );
                     scene.add( wall1 );
-
                     var wallGeo2 = new THREE.BoxGeometry( 600, 300, 1 );
                     var wallMat2 = new THREE.MeshBasicMaterial( { color: 0x333333} );
                     var wall2 = new THREE.Mesh( wallGeo2, wallMat2 );
                     scene.add( wall2 );
-                    
                     var wallGeo3 = new THREE.BoxGeometry( 1, 300, 600 );
                     var wallMat3 = new THREE.MeshBasicMaterial( { color: 0xaaaaaa} );
                     var wall3 = new THREE.Mesh( wallGeo3, wallMat3 );
                     scene.add( wall3 );    
-                    
                     var wallGeo4 = new THREE.BoxGeometry( 1, 300, 600 );
                     var wallMat4 = new THREE.MeshBasicMaterial( { color: 0xaaaaaa} );
                     var wall4 = new THREE.Mesh( wallGeo4, wallMat4 );
                     scene.add( wall4 );
                     
-                    //Table & Table Legs
+                    //table & table legs
                     var tableGeo = new THREE.BoxGeometry( 140, 5, 180 );
                     var tableMat = new THREE.MeshBasicMaterial( { color: 0x5555ff} );
                     var table = new THREE.Mesh( tableGeo, tableMat );
@@ -97,92 +103,85 @@
                     var tableLeg4Mat = new THREE.MeshBasicMaterial( { color: 0x0000ff} );
                     var tableLeg4 = new THREE.Mesh( tableLeg4Geo, tableLeg4Mat );
                     scene.add( tableLeg4 );
-                    
-                    
-                    
+                                      
+                /*******  POSITIONS  *******/
+                    //camera
                     camera.position.y = 150;
                     camera.position.z = 280;
-                    
+                    //cover
                     cover.position.y = 300;
-                    
+                    //wall
                     wall1.position.y = 150;
                     wall1.position.z = -300;
-                    
                     wall2.position.y = 150;
                     wall2.position.z = 300;
-                    
                     wall3.position.y = 150;
                     wall3.position.x = 300;
-                    
                     wall4.position.y = 150;
                     wall4.position.x = -300;
-                 
+                    //table
                     table.position.x = 180;
-                    table.position.y = 100;
-                    
+                    table.position.y = 100;                    
                     tableLeg1.position.x = 130;
                     tableLeg1.position.y = 50;
-                    tableLeg1.position.z = 60;
-                    
+                    tableLeg1.position.z = 60;                   
                     tableLeg2.position.x = 130;
                     tableLeg2.position.y = 50;
-                    tableLeg2.position.z = -60;
-                    
+                    tableLeg2.position.z = -60;                   
                     tableLeg3.position.x = 230;
                     tableLeg3.position.y = 50;
-                    tableLeg3.position.z = 60;
-    
+                    tableLeg3.position.z = 60;  
                     tableLeg4.position.x = 230;
                     tableLeg4.position.y = 50;
                     tableLeg4.position.z = -60;
-    
-            //#################################################################
-            //##  Functions
-            //###############################################################
                     
     
+            //#################################################################
+            //##  FUNCTIONS
+            //###############################################################        
+    
+                    //loop_function 
                     function animate()
                     {
                         requestAnimationFrame( animate );
                         render();
+                        update();
                     };
+                    //start_function
                     animate();
                     
-                    //Renderer
+                    //renderer_function
                     function render() 
                     {
                         renderer.render(scene, camera);
                     };
-                                     
-                    //KeyInputListener
-                    document.addEventListener('keydown', function(e)
-                    {
-                        var key = e.keyCode;
-                        //console.log(key);
-                        
+                    
+                    //update(keyboard input, ... )
+                    function update()
+                    {   
                         if (keyboard.pressed("W"))
                         {
-                            if(camera.position.z >= 295)
-                                camera.position.z = 295;
-                            if(camera.position.x >= 295)
-                                camera.position.x = 295;
-                            if(camera.position.z <= -295)
-                                camera.position.z = -295;
-                            if(camera.position.x <= -295)
-                                camera.position.x = -295;
+                            if(camera.position.z >= 290)
+                                camera.position.z = 290;
+                            if(camera.position.x >= 290)
+                                camera.position.x = 290;
+                            if(camera.position.z <= -290)
+                                camera.position.z = -290;
+                            if(camera.position.x <= -290)
+                                camera.position.x = -290;
                             camera.translateZ( -CAMERAMOVE );
                             console.log("forward");
                         }
                         if (keyboard.pressed("S"))
                         {
-                            if(camera.position.z >= 295)
-                                camera.position.z = 295;
-                            if(camera.position.x >= 295)
-                                camera.position.x = 295;
-                            if(camera.position.z <= -295)
-                                camera.position.z = -295;
-                            if(camera.position.x <= -295)
-                                camera.position.x = -295;
+                            if(camera.position.z >= 290)
+                                camera.position.z = 290;
+                            if(camera.position.x >= 290)
+                                camera.position.x = 290;
+                            if(camera.position.z <= -290)
+                                camera.position.z = -290;
+                            if(camera.position.x <= -290)
+                                camera.position.x = -290;
                             camera.translateZ( CAMERAMOVE );
                             console.log("backward");
                         }
@@ -196,21 +195,29 @@
                             camera.rotateOnAxis( new THREE.Vector3(0,1,0), -CAMERAROT);
                             console.log("right_rot");
                         }
-                        if (key === KEYUP) {
-                            if(camera.position.y < 205)
-                                camera.position.y += CAMERAMOVE;
-                            console.log("up");
-                        }
-                        if (key === KEYDOWN) {
-                            if(camera.position.y > 55)
-                                camera.position.y -= CAMERAMOVE;
-                            console.log("down");
-                        }
                         if (keyboard.pressed("R")) {
                             camera.position.x = 0;
                             camera.position.y = 150;
                             camera.position.z = 280;
-                            camera.rotation.y = 0;
+                            camera.rotation.y = 0; 
+                        }
+                    };
+                    
+                    document.addEventListener('keydown', function(e)
+                    {
+                        var key = e.keyCode;
+                        
+                        if (key === (KEYUP))
+                        {
+                            if(camera.position.y < 205)
+                                camera.position.y += CAMERAMOVE;
+                            console.log("up");
+                        }
+                        if (key === (KEYDOWN))
+                        {
+                            if(camera.position.y > 55)
+                                camera.position.y -= CAMERAMOVE;
+                            console.log("down");
                         }
                     });
                 </script>
