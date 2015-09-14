@@ -228,25 +228,13 @@
                 }
                 if (keyboard.pressed("A"))
                 {
-                    if(keyboard.pressed("S")){
-                        camera.rotateOnAxis( new THREE.Vector3(0,1,0), -CAMERAROT);
-                        console.log("right_rot");                        
-                    }
-                    else{
-                        camera.rotateOnAxis(new THREE.Vector3(0,1,0), CAMERAROT);
-                        console.log("left_rot");
-                    }
+                    camera.rotateOnAxis(new THREE.Vector3(0,1,0), CAMERAROT);
+                    console.log("left_rot");
                 }
                 if (keyboard.pressed("D")) 
                 {
-                    if(keyboard.pressed("S")){
-                        camera.rotateOnAxis(new THREE.Vector3(0,1,0), CAMERAROT);
-                        console.log("left_rot");                        
-                    }
-                    else{
-                      camera.rotateOnAxis( new THREE.Vector3(0,1,0), -CAMERAROT);
-                        console.log("right_rot");                        
-                    }
+                    camera.rotateOnAxis( new THREE.Vector3(0,1,0), -CAMERAROT);
+                    console.log("right_rot");
                 }
                 if (keyboard.pressed("R"))
                 {
