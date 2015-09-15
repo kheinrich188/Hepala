@@ -52,9 +52,11 @@
 
             /*******   ROOM   *******/
             //floor
-            var floorTexture = new THREE.ImageUtils.loadTexture( "images/wood-floor.jpg" );
-            floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-            floorTexture.repeat.set( 10, 10 );
+            //THREE.ImageUtils.crossOrigin = '';
+            var floorTexture = THREE.ImageUtils.loadTexture( 'images/wood-floor.jpg' );
+            floorTexture.wrapS = THREE.RepeatWrapping;
+            floorTexture.wrapT = THREE.RepeatWrapping;
+            floorTexture.repeat.set( 4, 4 );
             var floorGeo = new THREE.BoxGeometry( 600, 1, 600 );
             var floorMat = new THREE.MeshPhongMaterial( { map: floorTexture } );
             var floor = new THREE.Mesh( floorGeo, floorMat );
