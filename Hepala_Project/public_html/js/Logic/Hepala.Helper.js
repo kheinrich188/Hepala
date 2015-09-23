@@ -41,9 +41,9 @@ function radianFromDegree(degrees){
                 return Math.pow(progress, 2) * ((x + 1) * progress - x);
             },
             bounce: function(progress) {
-                for (var x = 0, y = 1; 1; x += b, b /= 2) {
-                    if (progress >= (7 - 4 * a) / 11) {
-                        return -Math.pow((11 - 6 * a - 11 * progress) / 4, 2) + Math.pow(b, 2);
+                for (var x = 0, y = 1; 1; x += y, y /= 2) {
+                    if (progress >= (7 - 4 * x) / 11) {
+                        return -Math.pow((11 - 6 * x - 11 * progress) / 4, 2) + Math.pow(y, 2);
                     }
                 }
             },
@@ -89,13 +89,11 @@ function radianFromDegree(degrees){
                 if (progress >= options.duration){
                     clearInterval(id);
                     progress = options.duration;
+                    options.complete();
                 }
                 options.progress = progress;
                 var delta = options.delta(progress);
                 options.step(delta);
-                if (progress == options.duration){
-                    options.complete();
-                }
                 
             }, options.delay || 10);
         },
@@ -133,8 +131,15 @@ function radianFromDegree(degrees){
                 delay: options.delay,
                 delta: function(progress){
                     progress = this.progress;
-                    if (progress > options.duration){
-                        return options.endValues;
+                    if (progress >= options.duration){
+                        console.log("Ready");
+                        return {
+                            position:{
+                                x: endPosition.x,
+                                y: endPosition.y,
+                                z: endPosition.z
+                            }
+                        };
                     }
                     var percent = progress / options.duration;
                     var updateValue = options.animationType(percent);
