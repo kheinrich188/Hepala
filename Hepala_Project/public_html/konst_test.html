@@ -1,242 +1,387 @@
 <html>
     <head>
-        <title>My first Three.js app</title>
+        <title>Konst Playground</title>
         <style>
             body { margin: 0; }
             canvas { width: 100%; height: 100% }
         </style>
+        <script src="js/Logic/Hepala.Helper.js"></script>
+        <script src="js/libs/three.js"></script>
+        <script src="js/libs/THREEx.KeyboardState.js"></script>
     </head>
     <body>
-        <script src="js/libs/jquery-2.1.4.js"></script>
-        <script src="js/libs/jQuery.MouseWheel.js"></script>
-        <script src="js/libs/jQuery.MouseHolded.js"></script>
-        <script src="js/libs/three.min.js"></script>
+
         <script>
 
-            $(document).ready(function() {
+            //#################################################################
+            //##  MAIN/CORE
+            //###############################################################
 
-                var scene = new THREE.Scene();
-                var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            //global
+            var clock = new THREE.Clock();
+            var keyboard = new THREEx.KeyboardState();
+            var targetList = [];
+            var mouse = {x: 0, y: 0};
+            var INTERSECTED;
+            var lookAtScene = true;
 
-                var renderer = new THREE.WebGLRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setClearColor(0x555555);
-                document.body.appendChild(renderer.domElement);
+            //constanten
+            var CAMERAMOVE = 3;
+            var CAMERAROT = 0.04;
 
-                //Constanten
-                var KEYUP = 38;       // up key
-                var KEYDOWN = 40;       // down key
-                var KEYROTLEFT = 37;       // up key
-                var KEYROTRIGHT = 39;       // up key
-                var KEYLEFT = 65;       // left key
-                var KEYRIGHT = 68;       // right key
-                var KEYFORWARD = 87;       // forward key
-                var KEYBACKWARD = 83;       // backward key
-                var CAMARAMOVE = 4;
+            var KEYUP = 38;       // up key
+            var KEYDOWN = 40;       // down key
 
 
+            //scene
+            var scene = new THREE.Scene();
+            //camera
+            //var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-                //#################################################################
-                //##  3D Objects
-                //###############################################################
+            //renderer
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            renderer.setClearColor(0x555555);
+            renderer.shadowMapEnabled = true;
+            // to antialias the shadow
+            renderer.shadowMapType = THREE.PCFSoftShadowMap;
 
-                //Room_Floor_Cover_Walls
-                var floorGeo = new THREE.BoxGeometry(600, 1, 600);
-                var floorMat = new THREE.MeshBasicMaterial({color: 0x878787});
-                var floor = new THREE.Mesh(floorGeo, floorMat);
-                scene.add(floor);
 
-                var coverGeo = new THREE.BoxGeometry(600, 1, 600);
-                var coverMat = new THREE.MeshBasicMaterial({color: 0x979797});
-                var cover = new THREE.Mesh(coverGeo, coverMat);
-                scene.add(cover);
 
-                var wallGeo1 = new THREE.BoxGeometry(600, 300, 1);
-                var wallMat1 = new THREE.MeshBasicMaterial({color: 0xcdcdcd});
-                var wall1 = new THREE.Mesh(wallGeo1, wallMat1);
-                scene.add(wall1);
+            //#################################################################
+            //##  3D OBJECTS
+            //###############################################################
 
-                var wallGeo2 = new THREE.BoxGeometry(600, 300, 1);
-                var wallMat2 = new THREE.MeshBasicMaterial({color: 0x333333});
-                var wall2 = new THREE.Mesh(wallGeo2, wallMat2);
-                scene.add(wall2);
+            /*******   ROOM   *******/
+            //floor
+            var floorTexture = new THREE.ImageUtils.loadTexture("images/wood-floor.jpg");
+            floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
+            floorTexture.repeat.set(10, 10);
+            var floorGeo = new THREE.BoxGeometry(600, 1, 600);
+            var floorMat = new THREE.MeshPhongMaterial({map: floorTexture});
+            var floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.castShadow = false;
+            floor.receiveShadow = true;
+            scene.add(floor);
+            //cover
+            var coverGeo = new THREE.BoxGeometry(600, 1, 600);
+            var coverMat = new THREE.MeshPhongMaterial({color: 0xfaeffe});
+            var cover = new THREE.Mesh(coverGeo, coverMat);
+            scene.add(cover);
 
-                var wallGeo3 = new THREE.BoxGeometry(1, 300, 600);
-                var wallMat3 = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
-                var wall3 = new THREE.Mesh(wallGeo3, wallMat3);
-                scene.add(wall3);
+            //walls
+            var wallGeo1 = new THREE.BoxGeometry(600, 300, 1);
+            var wallMat1 = new THREE.MeshPhongMaterial({color: 0xeaeaea});
+            var wall1 = new THREE.Mesh(wallGeo1, wallMat1);
+            wall1.castShadow = false;
+            wall1.receiveShadow = true;
+            scene.add(wall1);
+            var wallGeo2 = new THREE.BoxGeometry(600, 300, 1);
+            var wallMat2 = new THREE.MeshPhongMaterial({color: 0xeaeaea});
+            var wall2 = new THREE.Mesh(wallGeo2, wallMat2);
+            wall2.castShadow = false;
+            wall1.receiveShadow = true;
+            scene.add(wall2);
+            var wallGeo3 = new THREE.BoxGeometry(1, 300, 600);
+            var wallMat3 = new THREE.MeshPhongMaterial({color: 0xefefef});
+            var wall3 = new THREE.Mesh(wallGeo3, wallMat3);
+            wall3.castShadow = false;
+            wall3.receiveShadow = true;
+            scene.add(wall3);
+            var wallGeo4 = new THREE.BoxGeometry(1, 300, 600);
+            var wallMat4 = new THREE.MeshPhongMaterial({color: 0xefefef});
+            var wall4 = new THREE.Mesh(wallGeo4, wallMat4);
+            wall4.castShadow = false;
+            wall4.receiveShadow = true;
+            scene.add(wall4);
 
-                var wallGeo4 = new THREE.BoxGeometry(1, 300, 600);
-                var wallMat4 = new THREE.MeshBasicMaterial({color: 0xaaaaaa});
-                var wall4 = new THREE.Mesh(wallGeo4, wallMat4);
-                scene.add(wall4);
+            //table & table legs
+            var tableGeo = new THREE.BoxGeometry(140, 5, 180);
+            var tableMat = new THREE.MeshPhongMaterial({color: 0x5555ff, specular: 0x505050, shininess: 50});
+            var table = new THREE.Mesh(tableGeo, tableMat);
+            table.castShadow = true;
+            table.receiveShadow = false;
+            scene.add(table);
+            var tableLeg1Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+            var tableLeg1Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg1 = new THREE.Mesh(tableLeg1Geo, tableLeg1Mat);
+            tableLeg1.castShadow = true;
+            tableLeg1.receiveShadow = false;
+            scene.add(tableLeg1);
+            var tableLeg2Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+            var tableLeg2Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg2 = new THREE.Mesh(tableLeg2Geo, tableLeg2Mat);
+            tableLeg2.castShadow = true;
+            tableLeg2.receiveShadow = false;
+            scene.add(tableLeg2);
+            var tableLeg3Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+            var tableLeg3Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg3 = new THREE.Mesh(tableLeg3Geo, tableLeg3Mat);
+            tableLeg3.castShadow = true;
+            tableLeg3.receiveShadow = false;
+            scene.add(tableLeg3);
+            var tableLeg4Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
+            var tableLeg4Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg4 = new THREE.Mesh(tableLeg4Geo, tableLeg4Mat);
+            tableLeg4.castShadow = true;
+            tableLeg4.receiveShadow = false;
+            scene.add(tableLeg4);
 
-                //Table & Table Legs
-                var tableGeo = new THREE.BoxGeometry(140, 5, 180);
-                var tableMat = new THREE.MeshBasicMaterial({color: 0x5555ff});
-                var table = new THREE.Mesh(tableGeo, tableMat);
-                scene.add(table);
-                var tableLeg1Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-                var tableLeg1Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-                var tableLeg1 = new THREE.Mesh(tableLeg1Geo, tableLeg1Mat);
-                scene.add(tableLeg1);
-                var tableLeg2Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-                var tableLeg2Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-                var tableLeg2 = new THREE.Mesh(tableLeg2Geo, tableLeg2Mat);
-                scene.add(tableLeg2);
-                var tableLeg3Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-                var tableLeg3Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-                var tableLeg3 = new THREE.Mesh(tableLeg3Geo, tableLeg3Mat);
-                scene.add(tableLeg3);
-                var tableLeg4Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-                var tableLeg4Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-                var tableLeg4 = new THREE.Mesh(tableLeg4Geo, tableLeg4Mat);
-                scene.add(tableLeg4);
+            /*******   LIGHT   *******/
+            //lamp
+            var lampGeo = new THREE.CylinderGeometry(2, 15, 13, 10, 1, true);
+            var lampMat = new THREE.MeshPhongMaterial({color: 0xff0000, specular: 0xffffff, shininess: 1});
+            var lamp = new THREE.Mesh(lampGeo, lampMat);
+            scene.add(lamp);
+            var lamp2Geo = new THREE.CylinderGeometry(10, 15, 2, 30);
+            var lamp2Mat = new THREE.MeshPhongMaterial({color: 0xff0000, specular: 0xffffff, shininess: 1});
+            var lamp2 = new THREE.Mesh(lamp2Geo, lamp2Mat);
+            scene.add(lamp2);
+            var bulb1Geo = new THREE.DodecahedronGeometry(2, 0);
+            var bulb1Mat = new THREE.MeshBasicMaterial({color: 0x9c9c9c, specular: 0xcdcdcd, shininess: 1});
+            var bulb1 = new THREE.Mesh(bulb1Geo, bulb1Mat);
+            scene.add(bulb1);
+            var bulb2Geo = new THREE.DodecahedronGeometry(4, 2);
+            var bulb2Mat = new THREE.MeshBasicMaterial({color: 0xffffaa, specular: 0x0000ff, shininess: 1});
+            var bulb2 = new THREE.Mesh(bulb2Geo, bulb2Mat);
+            scene.add(bulb2);
+            //spotlight
+            var spotlight = new THREE.SpotLight(0xffffff, 0.8, 0, 1.711, 0.5);
+            spotlight.position.set(0, 300, 0);
+            spotlight.castShadow = true;
+            spotlight.shadowCameraFov = 500;
+            spotlight.shadowDarkness = 0.5;
+            spotlight.shadowCameraVisible = true;
+            scene.add(spotlight);
+            //ambient light
+            var amblight = new THREE.AmbientLight(0x606060); // soft white light
+            scene.add(amblight);
 
-                var light = new THREE.PointLight(0xff0000, 1, 100);
-                light.position.set(50, 50, 50);
-                scene.add(light);
+            /*******  POSITIONS  *******/
+            //camera
+//            camera.position.y = 150;
+//            camera.position.z = 280;
+            camera.position.y = 150;
+            camera.position.z = 280;
 
-                camera.position.y = 150;
-                camera.position.z = 280;
+            //cover
+            cover.position.y = 300;
+            //wall
+            wall1.position.y = 150;
+            wall1.position.z = -300;
+            wall2.position.y = 150;
+            wall2.position.z = 300;
+            wall3.position.y = 150;
+            wall3.position.x = 300;
+            wall4.position.y = 150;
+            wall4.position.x = -300;
+            //table
+            table.position.x = 180;
+            table.position.y = 100;
+            tableLeg1.position.x = 130;
+            tableLeg1.position.y = 50;
+            tableLeg1.position.z = 60;
+            tableLeg2.position.x = 130;
+            tableLeg2.position.y = 50;
+            tableLeg2.position.z = -60;
+            tableLeg3.position.x = 230;
+            tableLeg3.position.y = 50;
+            tableLeg3.position.z = 60;
+            tableLeg4.position.x = 230;
+            tableLeg4.position.y = 50;
+            tableLeg4.position.z = -60;
+            //lamp
+            lamp.position.y = 290;
+            lamp2.position.y = 285;
+            bulb1.position.y = 288;
+            bulb2.position.y = 283;
 
-                cover.position.y = 300;
+            /*****  TARGETLIST  *****/
+            targetList.push(table, tableLeg1, tableLeg2, tableLeg3, tableLeg4);
+            document.addEventListener('mousedown', onDocumentMouseDown, false);
+            function onDocumentMouseDown(event)
+            {
+                if (targetList > 0)
+                {
+                    camera.position.set(0, 150, 0);
+                }
 
-                wall1.position.y = 150;
-                wall1.position.z = -300;
+            }
+            //#################################################################
+            //##  FUNCTIONS
+            //###############################################################        
 
-                wall2.position.y = 150;
-                wall2.position.z = 300;
+            //loop_function 
 
-                wall3.position.y = 150;
-                wall3.position.x = 300;
-
-                wall4.position.y = 150;
-                wall4.position.x = -300;
-
-                table.position.x = 180;
-                table.position.y = 100;
-
-                tableLeg1.position.x = 130;
-                tableLeg1.position.y = 50;
-                tableLeg1.position.z = 60;
-
-                tableLeg2.position.x = 130;
-                tableLeg2.position.y = 50;
-                tableLeg2.position.z = -60;
-
-                tableLeg3.position.x = 230;
-                tableLeg3.position.y = 50;
-                tableLeg3.position.z = 60;
-
-                tableLeg4.position.x = 230;
-                tableLeg4.position.y = 50;
-                tableLeg4.position.z = -60;
-
-                //#################################################################
-                //##  Functions
-                //###############################################################
-
-                //Renderer
-                var render = function() {
-                    requestAnimationFrame(render);
-                    renderer.render(scene, camera);
-
-                };
+            function animate()
+            {
+                update();
                 render();
+                requestAnimationFrame(animate);
+            }
+            ;
+            //start_function
+            animate();
 
+            //renderer_function
+            function render()
+            {
+                var timer = Date.now() * 0.0001;
 
-                $(window).bind('mousemove', function(e) {
-                    camera.position.y = e.pageY / 2;
-                    camera.position.x = e.pageX - 1024;
-                    console.log("e.pageX: " + e.pageX + ", e.pageY: " + e.pageY);
-                    console.log("cameraX: " + camera.position.x + ", cameraY: " + camera.position.y, " cameraZ: " + camera.position.z);
-                    console.log("innerHeight " + window.innerHeight + ", innerWidth " + window.innerWidth);
-                });
-                
+                //camera.position.x = Math.cos( timer ) * 500;
+                //camera.position.z = Math.sin( timer ) * 200;
+                if (lookAtScene)
+                    camera.lookAt(scene.position);
 
-                var wheelCounter = 0;
-                var defaultCameraPostion = {
-                    x: camera.position.x,
-                    y: camera.position.y,
-                    z: camera.position.z
-                };
-                var sceneFaults = {
-                    maxZ: 2
+                renderer.render(scene, camera);
+            }
+            ;
 
-                };
-                
-                function gradToRad(grad){
-                    return grad * 0.017453292519943;
+            //update(keyboard input, ... )
+            function update()
+            {
+                if (keyboard.pressed("W"))
+                {
+                    if (camera.position.z >= 290)
+                        camera.position.z = 290;
+                    if (camera.position.x >= 290)
+                        camera.position.x = 290;
+                    if (camera.position.z <= -290)
+                        camera.position.z = -290;
+                    if (camera.position.x <= -290)
+                        camera.position.x = -290;
+                    camera.translateZ(-CAMERAMOVE);
+                    console.log("forward");
                 }
-                function radToGrad(rad){
-                    return rad * 57.295779513082;
+                if (keyboard.pressed("S"))
+                {
+                    if (camera.position.z >= 290)
+                        camera.position.z = 290;
+                    if (camera.position.x >= 290)
+                        camera.position.x = 290;
+                    if (camera.position.z <= -290)
+                        camera.position.z = -290;
+                    if (camera.position.x <= -290)
+                        camera.position.x = -290;
+                    camera.translateZ(CAMERAMOVE);
+                    console.log("backward");
                 }
-                $(document).on('mousewheel', function(event) {
-                    if (event.deltaY > 0) {
-                        wheelCounter++;
-                        camera.position.z -= wheelCounter;
-                        console.log("Grad in Rad" + wheelCounter + " = " + gradToRad(wheelCounter));
-                        camera.rotation.y = -gradToRad(wheelCounter*1.5);
-                        console.log(camera.position.z);
-
+                if (keyboard.pressed("A"))
+                {
+                    if (keyboard.pressed("S")) {
+                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
+                        console.log("right_rot");
                     }
                     else {
-                        wheelCounter--;
-                        camera.position.z += wheelCounter;
-                        camera.rotation.y = -gradToRad(wheelCounter*1.5);
-                        console.log("Spin out");
+                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
+                        console.log("left_rot");
                     }
-
-                    //console.log(event.deltaX, event.deltaY, event.deltaFactor, wheelCounter);
-                });
-                cameraFadeIn();
-
-                //KeyInputListener
-                document.addEventListener('keydown', function(e)
+                }
+                if (keyboard.pressed("D"))
                 {
-                    var key = e.keyCode;
-                    console.log(key);
+                    if (keyboard.pressed("S")) {
+                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
+                        console.log("left_rot");
+                    }
+                    else {
+                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
+                        console.log("right_rot");
+                    }
+                }
+                if (keyboard.pressed("R"))
+                {
+                    camera.position.set(0, 150, 280);
+                    camera.rotation.set(0, 0, 0);
+                }
 
-                    if (key === KEYUP) {
-                        if (camera.position.y < 205)
-                            camera.position.y += CAMARAMOVE;
-                        console.log("up");
+                if (keyboard.pressed("K")) {
+                    UIAnimator.moveObjectToPosition(camera,
+                            {
+                                x: -100,
+                                y: 180,
+                                z: 0
+                            },
+                    {
+                        duration: 10000,
+                        delay: 30,
+                        animationType: UIAnimator.easing.circ,
+                        complete: function() {
+                            //Hier könnte man eine anschluss animation ausführen
+                            console.log("Fertig");
+                        }
+                    });
+                }
+
+            }
+            ;
+
+            document.addEventListener('mousedown', function(event)
+            {
+                console.log("click");
+                // update the mouse variable
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                console.log(mouse.x + " | " + mouse.y);
+
+                // create a Ray with origin at the mouse position
+                // and direction into the scene (camera direction)
+                var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
+                vector.unproject(camera);
+                var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+                //list of all parts of the table
+                var targetList = [table, tableLeg1, tableLeg2, tableLeg3, tableLeg4];
+                var intersects = ray.intersectObjects(targetList);
+
+                // INTERSECTED = the object in the scene currently closest to the camera 
+                //		and intersected by the Ray projected from the mouse position 	
+
+                // if there is one (or more) intersections
+                if (intersects.length > 0)
+                {
+                    // if the closest object intersected is not the currently stored intersection object
+                    if (intersects[ 0 ].object !== INTERSECTED)
+                    {
+                        // restore previous intersection object (if it exists) to its original color
+                        if (INTERSECTED)
+                            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+                        // store reference to closest object as current intersection object
+                        INTERSECTED = intersects[ 0 ].object;
+                        // store color of closest object (for later restoration)
+                        INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
+                        // set a new color for closest object
+                        //   INTERSECTED.material.color.setHex( 0xffff00 );
+                        cameraToTable();
                     }
-                    else if (key === KEYDOWN) {
-                        if (camera.position.y > 55)
-                            camera.position.y -= CAMARAMOVE;
-                        console.log("down");
-                    }
-                    else if (key === KEYROTLEFT) {
-                        camera.rotation.y += 0.05;
-                        console.log("left rotation");
-                    }
-                    else if (key === KEYROTRIGHT) {
-                        camera.rotation.y -= 0.05;
-                        console.log("right rotation");
-                    }
-                    else if (key === KEYLEFT) {
-                        if (camera.position.x > -295)
-                            camera.position.x -= CAMARAMOVE;
-                        console.log("left");
-                    }
-                    else if (key === KEYRIGHT) {
-                        if (camera.position.x < 295)
-                            camera.position.x += CAMARAMOVE;
-                        console.log("right");
-                    }
-                    else if (key === KEYFORWARD) {
-                        if (camera.position.z > -295)
-                            camera.position.z -= CAMARAMOVE;
-                        console.log("forward");
-                    }
-                    else if (key === KEYBACKWARD) {
-                        if (camera.position.z < 295)
-                            camera.position.z += CAMARAMOVE;
-                        console.log("backward");
-                    }
-                });
+                }
+                else // there are no intersections
+                {
+                    // restore previous intersection object (if it exists) to its original color
+                    if (INTERSECTED)
+                        INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
+                    // remove previous intersection object reference
+                    //     by setting current intersection object to "nothing"
+                    INTERSECTED = null;
+                }
+            });
+
+            document.addEventListener('keydown', function(e)
+            {
+                var key = e.keyCode;
+
+                if (key === (KEYUP))
+                {
+                    if (camera.position.y < 205)
+                        camera.position.y += CAMERAMOVE;
+                    console.log("up");
+                }
+                if (key === (KEYDOWN))
+                {
+                    if (camera.position.y > 55)
+                        camera.position.y -= CAMERAMOVE;
+                    console.log("down");
+                }
             });
 
         </script>
