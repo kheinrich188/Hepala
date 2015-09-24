@@ -5,8 +5,10 @@
             body { margin: 0; }
             canvas { width: 100%; height: 100% }
         </style>
-        <script src="js/Logic/Hepala.Helper.js"></script>
         <script src="js/libs/three.js"></script>
+        <script src="js/Logic/Hepala.Extensions.js"></script>
+        <script src="js/Logic/Hepala.Helper.js"></script>
+        
         <script src="js/libs/THREEx.KeyboardState.js"></script>
     </head>
     <body>
@@ -297,73 +299,31 @@
                 }
 
                 if (keyboard.pressed("K")) {
-                    UIAnimator.moveObjectToPosition(camera,
+                    console.log("Press K");
+                    
+                }
+
+            };
+
+            document.addEventListener('mousedown', function(event)
+            {
+                console.log("click");
+                UIAnimator.moveObjectToPosition2(camera,
                             {
                                 x: -100,
                                 y: 180,
                                 z: 0
                             },
                     {
-                        duration: 10000,
-                        delay: 30,
-                        animationType: UIAnimator.easing.circ,
+                        duration: 5000,
+                        delay: 10,
+                        animationType: UIAnimator.easing.linear,
                         complete: function() {
                             //Hier könnte man eine anschluss animation ausführen
+                            //camera.lookAt(table.position);
                             console.log("Fertig");
                         }
                     });
-                }
-
-            }
-            ;
-
-            document.addEventListener('mousedown', function(event)
-            {
-                console.log("click");
-                // update the mouse variable
-                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-                console.log(mouse.x + " | " + mouse.y);
-
-                // create a Ray with origin at the mouse position
-                // and direction into the scene (camera direction)
-                var vector = new THREE.Vector3(mouse.x, mouse.y, 1);
-                vector.unproject(camera);
-                var ray = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-                //list of all parts of the table
-                var targetList = [table, tableLeg1, tableLeg2, tableLeg3, tableLeg4];
-                var intersects = ray.intersectObjects(targetList);
-
-                // INTERSECTED = the object in the scene currently closest to the camera 
-                //		and intersected by the Ray projected from the mouse position 	
-
-                // if there is one (or more) intersections
-                if (intersects.length > 0)
-                {
-                    // if the closest object intersected is not the currently stored intersection object
-                    if (intersects[ 0 ].object !== INTERSECTED)
-                    {
-                        // restore previous intersection object (if it exists) to its original color
-                        if (INTERSECTED)
-                            INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-                        // store reference to closest object as current intersection object
-                        INTERSECTED = intersects[ 0 ].object;
-                        // store color of closest object (for later restoration)
-                        INTERSECTED.currentHex = INTERSECTED.material.color.getHex();
-                        // set a new color for closest object
-                        //   INTERSECTED.material.color.setHex( 0xffff00 );
-                        cameraToTable();
-                    }
-                }
-                else // there are no intersections
-                {
-                    // restore previous intersection object (if it exists) to its original color
-                    if (INTERSECTED)
-                        INTERSECTED.material.color.setHex(INTERSECTED.currentHex);
-                    // remove previous intersection object reference
-                    //     by setting current intersection object to "nothing"
-                    INTERSECTED = null;
-                }
             });
 
             document.addEventListener('keydown', function(e)
