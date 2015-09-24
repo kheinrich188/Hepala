@@ -126,13 +126,18 @@ function radianFromDegree(degrees){
          * @param {Object} options duration: Numbe, delay:Number, complete:function
          */
         moveObjectToPosition: function(threeObject, endPosition, options){
+            //Bug doesnt react if same. possible invalid type
+            if (threeObject.position == endPosition){
+                console.log("Values same");
+                options.complete();
+                return;
+            }
             this.positionAnimation({
                 duration: options.duration,
                 delay: options.delay,
                 delta: function(progress){
                     progress = this.progress;
                     if (progress >= options.duration){
-                        console.log("Ready");
                         return {
                             position:{
                                 x: endPosition.x,
@@ -154,13 +159,91 @@ function radianFromDegree(degrees){
                 },
                 complete: options.complete,
                 step: function (delta){
+                    //threeObject.setPosition(new THREE.Vector3(delta.position.x, delta.position.y,delta.position.z));
                     //set object new values
-                    threeObject.position.x = delta.position.x;
-                    threeObject.position.y = delta.position.y;
-                    threeObject.position.z = delta.position.z;
+                    //threeObject.position.set( delta.position.x, delta.position.y, delta.position.z );
+                    
+                    //threeObject.updateProjectionMatrix();
                     console.log(delta.position.x);
                     console.log(delta.position.y);
                     console.log(delta.position.z);
+                }
+            });
+        },
+        moveObjectToPosition2: function(threeObject, endPosition, options){
+            var startposition = threeObject.position;
+            
+            //math.abs wegen negativ zu positiv
+            var xDif = Math.abs(endPosition.x - startposition.x);
+            var yDif = Math.abs(endPosition.y - startposition.y);
+            var zDif = Math.abs(endPosition.z - startposition.z);
+            //array, damit ich besser min,max aufrufen kann
+            var diffArray = [xDif,yDif,zDif];
+            var max = diffArray.max();
+            //nimm den größten wert. hier dauert die animation exakt die länge der duration
+            //kann man nachvollziehen, wenn man die animation nur auf den max wert anwendet (der wert der genau 1 ist)
+            // die anderen sind jetzt kleiner als 1 da sie schneller gehen als der wert der 1 ist
+            var percentX = xDif/max;
+            var percentY = yDif/max;
+            var percentZ = zDif/max;
+            
+            console.log(xDif);
+            console.log(yDif);
+            console.log(zDif);
+            
+            console.log(percentX);
+            console.log(percentY);
+            console.log(percentZ);
+            //return;
+            this.positionAnimation({
+                duration: options.duration,
+                delay: options.delay,
+                delta: function(progress){
+                    progress = this.progress;
+                    if (progress >= options.duration){
+                        console.log("Ready");
+                        return {
+                            position:{
+                                x: endPosition.x,
+                                y: endPosition.y,
+                                z: endPosition.z
+                            }
+                        };
+                    }
+                    //percent ist der wert der die animation dauert (nach der hälfte 0.5 bei fertig = 1)
+                    var percent = progress / options.duration;
+                    //wie soll ich diese jetzt in relation stellen???
+                    var percentx = percent * (percentX);
+                    var percenty = percent * percentY;
+                    var percentz = percent * percentZ;
+                    var updateValueX = options.animationType(percentx);
+                    var updateValueY = options.animationType(percenty);
+                    var updateValueZ = options.animationType(percentz);
+                    var updateValue = options.animationType(percent);
+                    console.log(updateValueX);
+                    //console.log(updateValueY);
+                    //console.log(updateValueZ);
+                    
+                    
+                    //return threeObject.position.x + (updateValue * (endPosition.x-threeObject.position.x));
+                    var complexResult = {
+                        position:{
+                            x: startposition.x + (updateValueX * (endPosition.x-startposition.x)),
+                            y: startposition.y + (updateValueY * (endPosition.y-startposition.y)),
+                            z: startposition.z + (updateValueZ * (endPosition.z-startposition.z))
+                        }
+                     };
+                    return complexResult;
+                },
+                complete: options.complete,
+                step: function (delta){
+                    //set object new values
+                    threeObject.position.x = delta.position.x;
+                    //threeObject.position.y = delta.position.y;
+                    //threeObject.position.z = delta.position.z;
+                    console.log(delta.position.x);
+                    //console.log(delta.position.y);
+                    //console.log(delta.position.z);
                 }
             });
         }
