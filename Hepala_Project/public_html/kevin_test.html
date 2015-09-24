@@ -22,7 +22,8 @@
             var keyboard = new THREEx.KeyboardState();
             var raycaster = new THREE.Raycaster();
             var mouse = new THREE.Vector2();
-            var lookAtScene = true;
+            var lookAtScene = false;
+            var view = 1;
             var tracking = 0;                       //0=reset, 1=run, 2=stop
 
             //constanten
@@ -38,13 +39,14 @@
 
             //scene
             var scene = new THREE.Scene();
+            var scene2 = new THREE.Scene();
             //camera
             var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
             //renderer
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize( window.innerWidth, window.innerHeight );
             document.body.appendChild( renderer.domElement );
-            renderer.setClearColor(0x555555);
+            renderer.setClearColor(0xccccff);
             renderer.shadowMapEnabled = true;
             // to antialias the shadow
             renderer.shadowMapType = THREE.PCFSoftShadowMap;
@@ -132,18 +134,32 @@
             scene.add( tableLeg4 );
             
             //notebook ONLY DUMMY
-            var notebookGeo = new THREE.BoxGeometry( 50, 2, 80);
-            var notebookMat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
-            var notebook = new THREE.Mesh( notebookGeo, notebookMat );
-            notebook.castShadow = true;
-            notebook.receiveShadow = false;
-            scene.add( notebook );
-            var notebook2Geo = new THREE.BoxGeometry( 50, 2, 80);
-            var notebook2Mat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
-            var notebook2 = new THREE.Mesh( notebook2Geo, notebook2Mat );
-            notebook2.castShadow = true;
-            notebook2.receiveShadow = false;
-            scene.add( notebook2 );
+            var notebookTopGeo = new THREE.BoxGeometry( 50, 2, 80);
+            var notebookTopMat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
+            var notebookTop = new THREE.Mesh( notebookTopGeo, notebookTopMat );
+            notebookTop.castShadow = true;
+            notebookTop.receiveShadow = false;
+            scene.add( notebookTop );
+            var notebookTop2Geo = new THREE.BoxGeometry( 50, 2, 80);
+            var notebookTop2Mat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
+            var notebookTop2 = new THREE.Mesh( notebookTop2Geo, notebookTop2Mat );
+            notebookTop2.castShadow = true;
+            notebookTop2.receiveShadow = false;
+            scene.add( notebookTop );
+            scene2.add( notebookTop2 );
+            var notebookBottomGeo = new THREE.BoxGeometry( 50, 2, 80);
+            var notebookBottomMat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
+            var notebookBottom = new THREE.Mesh( notebookBottomGeo, notebookBottomMat );
+            notebookBottom.castShadow = true;
+            notebookBottom.receiveShadow = false;
+            scene.add( notebookBottom );
+            var notebookBottom2Geo = new THREE.BoxGeometry( 50, 2, 80);
+            var notebookBottom2Mat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
+            var notebookBottom2 = new THREE.Mesh( notebookBottom2Geo, notebookBottom2Mat );
+            notebookBottom2.castShadow = true;
+            notebookBottom2.receiveShadow = false;
+            scene2.add( notebookBottom2 );
+
 
             /*******   LIGHT   *******/
             //lamp
@@ -171,9 +187,18 @@
             spotlight.shadowDarkness = 0.5;
             spotlight.shadowCameraVisible = true;
             scene.add( spotlight );
+            var spotlight2 = new THREE.SpotLight( 0xffffff, 0.8, 0, 1.711, 0.5 );
+            spotlight2.position.set( 0, 300, 0 );
+            spotlight2.castShadow = true;
+            spotlight2.shadowCameraFov = 500;
+            spotlight2.shadowDarkness = 0.5;
+            spotlight2.shadowCameraVisible = true;
+            scene2.add( spotlight2 );
             //ambient light
             var amblight = new THREE.AmbientLight( 0x606060 ); // soft white light
             scene.add( amblight );
+            var amblight2 = new THREE.AmbientLight( 0x606060 ); // soft white light
+            scene2.add( amblight2 );
 
             /*******  POSITIONS  *******/
             //camera
@@ -197,13 +222,15 @@
             bulb1.position.set(0,288,0);
             bulb2.position.set(0,283,0);
             //notebook
-            notebook.position.set(160,103,0);
-            notebook2.position.set(200,105,0);
-            notebook2.translateX( -40 );
+            notebookTop.position.set(160,103,0);
+            notebookBottom.position.set(160,105,0);
+            notebookTop2.position.set(160,103,0);
+            notebookBottom2.position.set(200,105,0);
+            notebookBottom2.translateX( -40 );
 
             /*******  Targetlist  *******/
             var tableList = [table,tableLeg1,tableLeg2,tableLeg3,tableLeg4];
-            var notebookList = [notebook, notebook2];
+            var notebookList = [notebookTop, notebookBottom];
             
 
             //#################################################################
@@ -230,7 +257,7 @@
                     
                     camera.position.x = Math.cos( timer ) * 100 + 150;
                     camera.position.z = Math.sin( timer ) * 100;
-                    camera.lookAt( notebook.position ); 
+                    camera.lookAt( notebookTop.position ); 
                 }
                 if(tracking === 2)
                 {     
@@ -238,7 +265,12 @@
                     camera.rotation.set(0,-Math.PI/2,0);
                     tracking = 0;
                 }
-                renderer.render(scene, camera);
+                if (lookAtScene)
+                    camera.lookAt(notebookTop.position);
+                if(view === 1)
+                    renderer.render(scene, camera);
+                else if(view === 2)
+                    renderer.render(scene2, camera);
             };
             
             //
@@ -254,7 +286,24 @@
                 {
                     if(intersects[0].object === table)
                     {
-                        tracking = 1;
+                        //tracking = 1;
+                        lookAtScene = true;
+                        UIAnimator.moveObjectToPosition(camera,
+                            {
+                                x: 50,
+                                y: 150,
+                                z: 0
+                            },
+                            {
+                                duration: 10000,
+                                delay: 30,
+                                animationType: UIAnimator.easing.circ,
+                                complete: function() {
+                                    //Hier könnte man eine anschluss animation ausführen
+                                    tracking = 1;
+                                    console.log("Fertig");
+                            }
+                        });
                     }
                     else
                     {
@@ -318,13 +367,13 @@
                             console.log("right_rot");                        
                         }
                     }
-                    if (keyboard.pressed("K")) 
+                    /*if (keyboard.pressed("K")) 
                     {
-                        camera.lookAt( notebook.position );
+                        lookAtScene = true;
                         UIAnimator.moveObjectToPosition(camera,
                             {
-                                x: 100,
-                                y: 180,
+                                x: 50,
+                                y: 150,
                                 z: 0
                             },
                             {
@@ -333,10 +382,11 @@
                                 animationType: UIAnimator.easing.circ,
                                 complete: function() {
                                     //Hier könnte man eine anschluss animation ausführen
+                                    lookAtScene = false;
                                     console.log("Fertig");
                             }
                         });
-                    }
+                    }*/
                 }
             };
 
@@ -364,14 +414,12 @@
                     //room_view: 1
                     if (key === KEY_1)
                     {   
-                        tracking = 0;
-                        camera.position.set(0,150,280);
-                        camera.rotation.set(0,0,0);
+                        view = 1;
                     }
                     //table_view: 2
                     if (key === KEY_2)
                     {   
-                        tracking = 1;
+                        view = 2;
                     }
                 });
         </script>
