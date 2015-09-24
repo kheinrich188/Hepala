@@ -190,7 +190,7 @@ function radianFromDegree(degrees){
             console.log(percentX);
             console.log(percentY);
             console.log(percentZ);
-            //return;
+            
             this.positionAnimation({
                 duration: options.duration,
                 delay: options.delay,
@@ -233,11 +233,14 @@ function radianFromDegree(degrees){
                 },
                 complete: options.complete,
                 step: function (delta){
-                    threeObject.position.set( delta.position.x, delta.position.y, delta.position.z );
+                    //set object new values
+                    threeObject.position.x = delta.position.x;
+                    //threeObject.position.y = delta.position.y;
+                    //threeObject.position.z = delta.position.z;
+                    //console.log(delta.position.x);
+                    //console.log(delta.position.y);
                     console.log(delta.position.x);
-                    console.log(delta.position.y);
-                    console.log(delta.position.z);
-                    //console.log(threeObject.position.z);
+                    console.log(threeObject.position.x);
                 }
             });
         }
