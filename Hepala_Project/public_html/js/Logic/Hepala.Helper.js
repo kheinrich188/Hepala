@@ -159,11 +159,7 @@ function radianFromDegree(degrees){
                 },
                 complete: options.complete,
                 step: function (delta){
-                    //threeObject.setPosition(new THREE.Vector3(delta.position.x, delta.position.y,delta.position.z));
-                    //set object new values
-                    //threeObject.position.set( delta.position.x, delta.position.y, delta.position.z );
-                    
-                    //threeObject.updateProjectionMatrix();
+                    threeObject.position.set( delta.position.x, delta.position.y, delta.position.z );
                     console.log(delta.position.x);
                     console.log(delta.position.y);
                     console.log(delta.position.z);
@@ -213,14 +209,14 @@ function radianFromDegree(degrees){
                     //percent ist der wert der die animation dauert (nach der hälfte 0.5 bei fertig = 1)
                     var percent = progress / options.duration;
                     //wie soll ich diese jetzt in relation stellen???
-                    var percentx = percent * (percentX);
+                    var percentx = percent * percentX;
                     var percenty = percent * percentY;
                     var percentz = percent * percentZ;
                     var updateValueX = options.animationType(percentx);
                     var updateValueY = options.animationType(percenty);
                     var updateValueZ = options.animationType(percentz);
                     var updateValue = options.animationType(percent);
-                    console.log(updateValueX);
+                    //console.log(updateValueX);
                     //console.log(updateValueY);
                     //console.log(updateValueZ);
                     
@@ -237,13 +233,11 @@ function radianFromDegree(degrees){
                 },
                 complete: options.complete,
                 step: function (delta){
-                    //set object new values
-                    threeObject.position.x = delta.position.x;
-                    //threeObject.position.y = delta.position.y;
-                    //threeObject.position.z = delta.position.z;
+                    threeObject.position.set( delta.position.x, delta.position.y, delta.position.z );
                     console.log(delta.position.x);
-                    //console.log(delta.position.y);
-                    //console.log(delta.position.z);
+                    console.log(delta.position.y);
+                    console.log(delta.position.z);
+                    //console.log(threeObject.position.z);
                 }
             });
         }
