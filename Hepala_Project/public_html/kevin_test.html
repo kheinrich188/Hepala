@@ -10,6 +10,7 @@
     <body>
 	<script src="js/libs/three.min.js"></script>
         <script src="js/libs/THREEx.KeyboardState.js"></script>
+        <script src="js/libs/OrbitControls.js"></script>
         <script src="js/Logic/Hepala.Helper.js"></script>
         <script src="js/Logic/Hepala.Extensions.js"></script>
         <script>
@@ -51,6 +52,8 @@
             renderer.shadowMapEnabled = true;
             // to antialias the shadow
             renderer.shadowMapType = THREE.PCFSoftShadowMap;
+            //orbit controlls
+            var controls = new THREE.OrbitControls( camera, renderer.domElement );
 
 
             //#################################################################
@@ -146,7 +149,6 @@
             var notebookTop2 = new THREE.Mesh( notebookTop2Geo, notebookTop2Mat );
             notebookTop2.castShadow = true;
             notebookTop2.receiveShadow = false;
-            scene.add( notebookTop );
             scene2.add( notebookTop2 );
             var notebookBottomGeo = new THREE.BoxGeometry( 50, 2, 80);
             var notebookBottomMat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
@@ -251,27 +253,36 @@
             //renderer_function
             function render() 
             {   
+                
+                
                 //animate camera tracking
                 if(tracking === 1)
                 {
                     var timer = Date.now() * 0.0005;
-                    
                     camera.position.x = Math.cos( timer ) * 100 + 150;
                     camera.position.z = Math.sin( timer ) * 100;
                     camera.lookAt( notebookTop.position ); 
                 }
                 if(tracking === 2)
                 {     
-                    camera.position.set(50,150,0);
-                    camera.rotation.set(0,-Math.PI/2,0);
+                    var notebookVektor = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z);
+                    camera.lookAt( notebookVektor );
+                    camera.rotation.y += Math.PI/2;
+                    console.log(notebookVektor);
                     tracking = 0;
                 }
                 if (lookAtScene)
                     camera.lookAt(notebookTop.position);
                 if(view === 1)
+                {
                     renderer.render(scene, camera);
+                }
                 else if(view === 2)
+                {
+                    controls.update();
+                    camera.lookAt(notebookTop.position);
                     renderer.render(scene2, camera);
+                }
             };
             
             //
@@ -285,17 +296,17 @@
                 
                 if (intersects.length > 0) 
                 {
-                    if(intersects[0].object === table)
+                    if(intersects[0].object === table && view === 1)
                     {
                         lookAtScene = true;
-                        UIAnimator.moveObjectToPosition(camera,
+                        UIAnimator.moveObjectToPosition2(camera,
                             {
                                 x: 50,
                                 y: 150,
                                 z: 0
                             },
                             {
-                                duration: 10000,
+                                duration: 7500,
                                 delay: 30,
                                 animationType: UIAnimator.easing.circ,
                                 complete: function() {
