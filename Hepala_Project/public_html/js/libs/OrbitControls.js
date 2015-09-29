@@ -294,14 +294,15 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			zoomStart.copy( zoomEnd );
 
-		} else if ( state === STATE.PAN ) {
+		} 
+                /*else if ( state === STATE.PAN ) {
 
 			var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
 			var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
 
 			scope.pan( new THREE.Vector3( - movementX, movementY, 0 ) );
 
-		}
+		}*/
 
 	}
 

@@ -10,6 +10,7 @@
     <body>
         <script src="js/libs/three.js"></script>
         <script src="js/libs/THREEx.KeyboardState.js"></script>
+        <script src="js/libs/OrbitControls.js"></script>
         <script src="js/Logic/Hepala.Helper.js"></script>
         <script src="js/Logic/Hepala.Extensions.js"></script>
         <script>
@@ -51,7 +52,8 @@
             renderer.shadowMapEnabled = true;
             // to antialias the shadow
             renderer.shadowMapType = THREE.PCFSoftShadowMap;
-
+            //orbit controlls
+            var controls = new THREE.OrbitControls( camera, renderer.domElement );
 
             //#################################################################
             //##  3D OBJECTS
@@ -226,13 +228,13 @@
             notebookTop.position.set(160, 103, 0);
             notebookBottom.position.set(160,105, 0);
             
-
+            //pivot for notebook rotation
             pivot.position.set(25, 0, 0);
             pivot.add(notebookBottom);
             scene.add(pivot);
 
-
-             var final = new THREE.Matrix4();
+            //notebook rotation
+            var final = new THREE.Matrix4();
                 var a = new THREE.Matrix4().makeTranslation(25,0, 0);
                 var b = new THREE.Matrix4().makeRotationZ(0);
                 var c = new THREE.Matrix4().makeTranslation(0, 0, 0);
@@ -245,10 +247,8 @@
                 notebookBottom.matrix.identity();
                 console.log(final);
             
-
             notebookTop2.position.set(160, 103, 0);
-            notebookBottom2.position.set(200, 105, 0);
-            notebookBottom2.translateX(-40);
+            notebookBottom2.position.set(160, 105, 0);
 
             /*******  Targetlist  *******/
             var tableList = [table, tableLeg1, tableLeg2, tableLeg3, tableLeg4];
@@ -293,9 +293,13 @@
                 if (view === 1)
                     renderer.render(scene, camera);
                 else if (view === 2)
+                {
+                    controls.update();
+                    camera.lookAt(notebookTop.position);
                     renderer.render(scene2, camera);
+                }
+                    
             }
-            ;
 
             //
             function onMouseDown(event)
