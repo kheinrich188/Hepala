@@ -8,7 +8,7 @@
         <link rel="shortcut icon" href="">
     </head>
     <body>
-	<script src="js/libs/three.min.js"></script>
+	<script src="js/libs/three.js"></script>
         <script src="js/libs/THREEx.KeyboardState.js"></script>
         <script src="js/Logic/Hepala.Helper.js"></script>
         <script src="js/Logic/Hepala.Extensions.js"></script>
@@ -26,7 +26,7 @@
             var lookAtScene = false;
             var view = 1;
             var tracking = 0;                       //0=reset, 1=run, 2=stop
-
+            var pivot = new THREE.Object3D();
             //constanten
             var CAMERAMOVE  = 3;
             var CAMERAROT   = 0.04;
@@ -153,7 +153,7 @@
             var notebookBottom = new THREE.Mesh( notebookBottomGeo, notebookBottomMat );
             notebookBottom.castShadow = true;
             notebookBottom.receiveShadow = false;
-            scene.add( notebookBottom );
+            //scene.add( notebookBottom );
             var notebookBottom2Geo = new THREE.BoxGeometry( 50, 2, 80);
             var notebookBottom2Mat = new THREE.MeshPhongMaterial( { color: 0xefefef} );
             var notebookBottom2 = new THREE.Mesh( notebookBottom2Geo, notebookBottom2Mat );
@@ -224,7 +224,17 @@
             bulb2.position.set(0,283,0);
             //notebook
             notebookTop.position.set(160,103,0);
-            notebookBottom.position.set(160,105,0);
+            notebookBottom.position.set(-25,25,0);
+            var degree = 1.57;
+            
+            var transformation = new THREE.Matrix4().makeTranslation(160,105,0);
+             //notebookBottom.geometry.applyMatrix(transformation);
+            
+            
+            pivot.position.set(160,105,0);
+            pivot.add( notebookBottom );
+            scene.add( pivot );
+            
             notebookTop2.position.set(160,103,0);
             notebookBottom2.position.set(200,105,0);
             notebookBottom2.translateX( -40 );
@@ -277,7 +287,17 @@
             //
             function onMouseDown( event ) 
             {
+                 UIAnimator.rotateObjectAtAxis(notebookList[1],new THREE.Vector3(0,0,1), 90, {
+                    duration: 1000,
+                    delay: 10,
+                    animationType: UIAnimator.easing.linear,
+                    complete: function() {
+                        //Hier könnte man eine anschluss animation ausführen
+                        console.log("Fertig");
+                    }
+                });
                 
+                return;
                 mouse.x = (event.layerX / renderer.domElement.width) * 2 - 1;
                 mouse.y = 1 - (event.layerY / renderer.domElement.height) * 2;               
                 raycaster.setFromCamera( mouse, camera );
@@ -318,6 +338,8 @@
             //update(keyboard input, ... )
             function update()
             {  
+                //pivot.rotation.z -= 0.02;
+                notebookBottom.rotation.z -= 0.03;
                 if(tracking === 0 && view === 1)
                 {
                     if (keyboard.pressed("W"))
