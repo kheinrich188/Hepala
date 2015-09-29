@@ -9,6 +9,7 @@
     </head>
     <body>
         <script src="js/libs/three.js"></script>
+        <script src="js/libs/three.min.js"></script>
         <script src="js/libs/THREEx.KeyboardState.js"></script>
         <script src="js/libs/OrbitControls.js"></script>
         <script src="js/Logic/Hepala.Helper.js"></script>
@@ -148,14 +149,13 @@
             var notebookTop2 = new THREE.Mesh(notebookTop2Geo, notebookTop2Mat);
             notebookTop2.castShadow = true;
             notebookTop2.receiveShadow = false;
-            scene.add(notebookTop);
             scene2.add(notebookTop2);
             var notebookBottomGeo = new THREE.BoxGeometry(50, 2, 80);
             var notebookBottomMat = new THREE.MeshPhongMaterial({color: 0xefefef});
             var notebookBottom = new THREE.Mesh(notebookBottomGeo, notebookBottomMat);
             notebookBottom.castShadow = true;
             notebookBottom.receiveShadow = false;
-            //scene.add( notebookBottom );
+            scene.add( notebookBottom );
             var notebookBottom2Geo = new THREE.BoxGeometry(50, 2, 80);
             var notebookBottom2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
             var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottom2Mat);
@@ -183,20 +183,23 @@
             var bulb2 = new THREE.Mesh(bulb2Geo, bulb2Mat);
             scene.add(bulb2);
             //spotlight
-            var spotlight = new THREE.SpotLight(0xffffff, 0.8, 0, 1.711, 0.5);
-            spotlight.position.set(0, 300, 0);
+            var spotlight = new THREE.SpotLight( 0xffffff, 0.8, 0, 1.711, 0.5 );
+            spotlight.position.set( 0, 300, 0 );
             spotlight.castShadow = true;
             spotlight.shadowCameraFov = 500;
             spotlight.shadowDarkness = 0.5;
             spotlight.shadowCameraVisible = true;
-            scene.add(spotlight);
-            var spotlight2 = new THREE.SpotLight(0xffffff, 0.8, 0, 1.711, 0.5);
-            spotlight2.position.set(0, 300, 0);
+            scene.add( spotlight );
+            var spotlight2 = new THREE.SpotLight( 0xffffff, 0.8, 0, 1.711, 0.5 );
+            spotlight2.position.set( 0, 300, 0 );
             spotlight2.castShadow = true;
             spotlight2.shadowCameraFov = 500;
             spotlight2.shadowDarkness = 0.5;
             spotlight2.shadowCameraVisible = true;
-            scene2.add(spotlight2);
+            scene2.add( spotlight2 );
+            var spotlight3 = new THREE.SpotLight( 0x606060, 0.8, 0, 1.711, 0.5 );
+            spotlight3.position.set( 0, -300, 0 );
+            scene2.add( spotlight3 );
             //ambient light
             var amblight = new THREE.AmbientLight(0x606060); // soft white light
             scene.add(amblight);
@@ -230,21 +233,21 @@
             
             //pivot for notebook rotation
             pivot.position.set(25, 0, 0);
-            pivot.add(notebookBottom);
-            scene.add(pivot);
+            pivot.add(notebookBottom2);
+            scene2.add(pivot);
 
             //notebook rotation
             var final = new THREE.Matrix4();
-                var a = new THREE.Matrix4().makeTranslation(25,0, 0);
+                var a = new THREE.Matrix4().makeTranslation(-25,0, 0);
                 var b = new THREE.Matrix4().makeRotationZ(0);
                 var c = new THREE.Matrix4().makeTranslation(0, 0, 0);
 
                 final.multiplyMatrices(a,b);
                 final.multiply(c);
-                notebookBottom.updateMatrix(); 
-                notebookBottom.geometry.applyMatrix(final);
+                notebookBottom2.updateMatrix(); 
+                notebookBottom2.geometry.applyMatrix(final);
                     
-                notebookBottom.matrix.identity();
+                notebookBottom2.matrix.identity();
                 console.log(final);
             
             notebookTop2.position.set(160, 103, 0);
@@ -304,7 +307,7 @@
             //
             function onMouseDown(event)
             {
-                return;
+                /*return;
                 UIAnimator.rotateObjectAtAxis(notebookList[1], new THREE.Vector3(0, 0, 1), 90, {
                     duration: 1000,
                     delay: 10,
@@ -313,9 +316,9 @@
                         //Hier könnte man eine anschluss animation ausführen
                         console.log("Fertig");
                     }
-                });
+                });*/
 
-                return;
+                //return;
                 mouse.x = (event.layerX / renderer.domElement.width) * 2 - 1;
                 mouse.y = 1 - (event.layerY / renderer.domElement.height) * 2;
                 raycaster.setFromCamera(mouse, camera);
@@ -323,7 +326,7 @@
 
                 if (intersects.length > 0)
                 {
-                    if (intersects[0].object === table)
+                    if (intersects[0].object === table && view === 1)
                     {
                         lookAtScene = true;
                         UIAnimator.moveObjectToPosition(camera,
@@ -333,7 +336,7 @@
                                     z: 0
                                 },
                         {
-                            duration: 10000,
+                            duration: 7500,
                             delay: 30,
                             animationType: UIAnimator.easing.circ,
                             complete: function () {
@@ -356,8 +359,11 @@
             //update(keyboard input, ... )
             function update()
             {
-                notebookBottom.rotation.z -= 0.02;
-                console.log(notebookBottom.rotation.z);
+                if (view === 2 && notebookBottom2.rotation.z >= -2)
+                {
+                    notebookBottom2.rotation.z -= 0.006;
+                    console.log(notebookBottom2.rotation.z); 
+                }
                 
                 if (tracking === 0 && view === 1)
                 {
