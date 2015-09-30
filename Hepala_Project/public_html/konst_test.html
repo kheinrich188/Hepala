@@ -1,18 +1,19 @@
 <html>
     <head>
-        <title>Konst Playground</title>
+        <title>My first Three.js app</title>
         <style>
             body { margin: 0; }
             canvas { width: 100%; height: 100% }
         </style>
-        <script src="js/libs/three.js"></script>
-        <script src="js/Logic/Hepala.Extensions.js"></script>
-        <script src="js/Logic/Hepala.Helper.js"></script>
-        
-        <script src="js/libs/THREEx.KeyboardState.js"></script>
+        <link rel="shortcut icon" href="">
     </head>
     <body>
-
+        <script src="js/libs/three.js"></script>
+        <script src="js/libs/three.min.js"></script>
+        <script src="js/libs/THREEx.KeyboardState.js"></script>
+        <script src="js/libs/OrbitControls.js"></script>
+        <script src="js/Logic/Hepala.Helper.js"></script>
+        <script src="js/Logic/Hepala.Extensions.js"></script>
         <script>
 
             //#################################################################
@@ -22,35 +23,38 @@
             //global
             var clock = new THREE.Clock();
             var keyboard = new THREEx.KeyboardState();
-            var targetList = [];
-            var mouse = {x: 0, y: 0};
-            var INTERSECTED;
-            var lookAtScene = true;
-
+            var raycaster = new THREE.Raycaster();
+            var mouse = new THREE.Vector2();
+            var lookAtScene = false;
+            var view = 1;
+            var tracking = 0;                       //0=reset, 1=run, 2=stop
+            var pivot = new THREE.Object3D();
             //constanten
             var CAMERAMOVE = 3;
             var CAMERAROT = 0.04;
 
-            var KEYUP = 38;       // up key
-            var KEYDOWN = 40;       // down key
+            var KEY_UP = 38;       // up key
+            var KEY_DOWN = 40;       // down key
+            var KEY_R = 82;       // 'R' key
+            var KEY_1 = 49;       // '1' key
+            var KEY_2 = 50;       // '2' key
 
 
             //scene
             var scene = new THREE.Scene();
+            var scene2 = new THREE.Scene();
             //camera
-            //var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
             var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
             //renderer
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
-            renderer.setClearColor(0x555555);
+            renderer.setClearColor(0xaaaaff);
             renderer.shadowMapEnabled = true;
             // to antialias the shadow
             renderer.shadowMapType = THREE.PCFSoftShadowMap;
-
-
+            //orbit controlls
+            var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
             //#################################################################
             //##  3D OBJECTS
@@ -58,9 +62,11 @@
 
             /*******   ROOM   *******/
             //floor
-            var floorTexture = new THREE.ImageUtils.loadTexture("images/wood-floor.jpg");
-            floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-            floorTexture.repeat.set(10, 10);
+            THREE.ImageUtils.crossOrigin = '';
+            var floorTexture = THREE.ImageUtils.loadTexture('images/wood-floor.jpg');
+            floorTexture.wrapS = THREE.RepeatWrapping;
+            floorTexture.wrapT = THREE.RepeatWrapping;
+            floorTexture.repeat.set(4, 4);
             var floorGeo = new THREE.BoxGeometry(600, 1, 600);
             var floorMat = new THREE.MeshPhongMaterial({map: floorTexture});
             var floor = new THREE.Mesh(floorGeo, floorMat);
@@ -104,7 +110,7 @@
             var tableMat = new THREE.MeshPhongMaterial({color: 0x5555ff, specular: 0x505050, shininess: 50});
             var table = new THREE.Mesh(tableGeo, tableMat);
             table.castShadow = true;
-            table.receiveShadow = false;
+            table.receiveShadow = true;
             scene.add(table);
             var tableLeg1Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
             var tableLeg1Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
@@ -131,14 +137,41 @@
             tableLeg4.receiveShadow = false;
             scene.add(tableLeg4);
 
+            //notebook ONLY DUMMY
+            var notebookTopGeo = new THREE.BoxGeometry(50, 2, 80);
+            var notebookTopMat = new THREE.MeshPhongMaterial({color: 0xefefef});
+            var notebookTop = new THREE.Mesh(notebookTopGeo, notebookTopMat);
+            notebookTop.castShadow = true;
+            notebookTop.receiveShadow = false;
+            scene.add(notebookTop);
+            var notebookTop2Geo = new THREE.BoxGeometry(50, 2, 80);
+            var notebookTop2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
+            var notebookTop2 = new THREE.Mesh(notebookTop2Geo, notebookTop2Mat);
+            notebookTop2.castShadow = true;
+            notebookTop2.receiveShadow = false;
+            scene2.add(notebookTop2);
+            var notebookBottomGeo = new THREE.BoxGeometry(51, 2, 80);
+            var notebookBottomMat = new THREE.MeshPhongMaterial({color: 0xefefef});
+            var notebookBottom = new THREE.Mesh(notebookBottomGeo, notebookBottomMat);
+            notebookBottom.castShadow = true;
+            notebookBottom.receiveShadow = false;
+            scene.add(notebookBottom);
+            var notebookBottom2Geo = new THREE.BoxGeometry(5, 2, 80);
+            var notebookBottom2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
+            var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottom2Mat);
+            notebookBottom2.castShadow = true;
+            notebookBottom2.receiveShadow = false;
+            scene2.add(notebookBottom2);
+
+
             /*******   LIGHT   *******/
             //lamp
             var lampGeo = new THREE.CylinderGeometry(2, 15, 13, 10, 1, true);
             var lampMat = new THREE.MeshPhongMaterial({color: 0xff0000, specular: 0xffffff, shininess: 1});
             var lamp = new THREE.Mesh(lampGeo, lampMat);
             scene.add(lamp);
-            var lamp2Geo = new THREE.CylinderGeometry(10, 15, 2, 30);
-            var lamp2Mat = new THREE.MeshPhongMaterial({color: 0xff0000, specular: 0xffffff, shininess: 1});
+            var lamp2Geo = new THREE.CylinderGeometry(10, 14, 2, 30);
+            var lamp2Mat = new THREE.MeshBasicMaterial({color: 0xff5555, specular: 0xff0000, shininess: 1});
             var lamp2 = new THREE.Mesh(lamp2Geo, lamp2Mat);
             scene.add(lamp2);
             var bulb1Geo = new THREE.DodecahedronGeometry(2, 0);
@@ -157,66 +190,70 @@
             spotlight.shadowDarkness = 0.5;
             spotlight.shadowCameraVisible = true;
             scene.add(spotlight);
+            var spotlight2 = new THREE.SpotLight(0xffffff, 0.8, 0, 1.711, 0.5);
+            spotlight2.position.set(0, 300, 0);
+            spotlight2.castShadow = true;
+            spotlight2.shadowCameraFov = 500;
+            spotlight2.shadowDarkness = 0.5;
+            spotlight2.shadowCameraVisible = true;
+            scene2.add(spotlight2);
+            var spotlight3 = new THREE.SpotLight(0x606060, 0.8, 0, 1.711, 0.5);
+            spotlight3.position.set(0, -300, 0);
+            scene2.add(spotlight3);
             //ambient light
             var amblight = new THREE.AmbientLight(0x606060); // soft white light
             scene.add(amblight);
+            var amblight2 = new THREE.AmbientLight(0x606060); // soft white light
+            scene2.add(amblight2);
 
             /*******  POSITIONS  *******/
             //camera
-//            camera.position.y = 150;
-//            camera.position.z = 280;
-            camera.position.y = 150;
-            camera.position.z = 280;
-
+            camera.position.set(0, 150, 280);
             //cover
-            cover.position.y = 300;
+            cover.position.set(0, 300, 0);
             //wall
-            wall1.position.y = 150;
-            wall1.position.z = -300;
-            wall2.position.y = 150;
-            wall2.position.z = 300;
-            wall3.position.y = 150;
-            wall3.position.x = 300;
-            wall4.position.y = 150;
-            wall4.position.x = -300;
+            wall1.position.set(0, 150, -300);
+            wall2.position.set(0, 150, 300);
+            wall3.position.set(300, 150, 0);
+            wall4.position.set(-300, 150, 0);
             //table
-            table.position.x = 180;
-            table.position.y = 100;
-            tableLeg1.position.x = 130;
-            tableLeg1.position.y = 50;
-            tableLeg1.position.z = 60;
-            tableLeg2.position.x = 130;
-            tableLeg2.position.y = 50;
-            tableLeg2.position.z = -60;
-            tableLeg3.position.x = 230;
-            tableLeg3.position.y = 50;
-            tableLeg3.position.z = 60;
-            tableLeg4.position.x = 230;
-            tableLeg4.position.y = 50;
-            tableLeg4.position.z = -60;
+            table.position.set(180, 100, 0);
+            tableLeg1.position.set(130, 50, 60);
+            tableLeg2.position.set(130, 50, -60);
+            tableLeg3.position.set(230, 50, 60);
+            tableLeg4.position.set(230, 50, -60);
             //lamp
-            lamp.position.y = 290;
-            lamp2.position.y = 285;
-            bulb1.position.y = 288;
-            bulb2.position.y = 283;
+            lamp.position.set(0, 290, 0);
+            lamp2.position.set(0, 285, 0);
+            bulb1.position.set(0, 288, 0);
+            bulb2.position.set(0, 283, 0);
+            //notebook
+            notebookTop.position.set(160, 103, 0);
+            notebookBottom.position.set(160, 105, 0);
+            notebookBottom.rotation.z = 1.57 * 2;
+            pivot.add(notebookBottom);
+            scene.add(pivot);
 
-            /*****  TARGETLIST  *****/
-            targetList.push(table, tableLeg1, tableLeg2, tableLeg3, tableLeg4);
-            document.addEventListener('mousedown', onDocumentMouseDown, false);
-            function onDocumentMouseDown(event)
-            {
-                if (targetList > 0)
-                {
-                    camera.position.set(0, 150, 0);
-                }
+            pivot.position.set(25, 0, 0);
+            pivot.add(notebookBottom);
+            scene.add(pivot);
+            var matrix = buildRotationMatrix([24, 0, 0], "z", [0.5, 0, 0]);
+            notebookBottom.updateMatrix();
+            notebookBottom.geometry.applyMatrix(matrix);
+            notebookBottom.matrix.identity();
+            notebookTop2.position.set(160, 103, 0);
+            notebookBottom2.position.set(160, 105, 0);
 
-            }
+            /*******  Targetlist  *******/
+            var tableList = [table, tableLeg1, tableLeg2, tableLeg3, tableLeg4];
+            var notebookList = [notebookTop, notebookBottom];
+
+
             //#################################################################
             //##  FUNCTIONS
             //###############################################################        
 
             //loop_function 
-
             function animate()
             {
                 update();
@@ -230,120 +267,202 @@
             //renderer_function
             function render()
             {
-                var timer = Date.now() * 0.0001;
+                //animate camera tracking
+                if (tracking === 1)
+                {
+                    var timer = Date.now() * 0.0005;
 
-                //camera.position.x = Math.cos( timer ) * 500;
-                //camera.position.z = Math.sin( timer ) * 200;
+                    camera.position.x = Math.cos(timer) * 100 + 150;
+                    camera.position.z = Math.sin(timer) * 100;
+                    camera.lookAt(notebookTop.position);
+                }
+                if (tracking === 2)
+                {
+                    camera.position.set(50, 150, 0);
+                    camera.rotation.set(0, -Math.PI / 2, 0);
+                    tracking = 0;
+                }
                 if (lookAtScene)
-                    camera.lookAt(scene.position);
+                    camera.lookAt(notebookTop.position);
+                if (view === 1)
+                    renderer.render(scene, camera);
+                else if (view === 2)
+                {
+                    controls.update();
+                    camera.lookAt(notebookTop.position);
+                    renderer.render(scene2, camera);
+                }
 
-                renderer.render(scene, camera);
             }
-            ;
+
+            //
+            function onMouseDown(event)
+            {
+
+
+
+                mouse.x = (event.layerX / renderer.domElement.width) * 2 - 1;
+                mouse.y = 1 - (event.layerY / renderer.domElement.height) * 2;
+                raycaster.setFromCamera(mouse, camera);
+                var intersects = raycaster.intersectObjects(scene.children);
+
+                if (intersects.length > 0)
+                {
+                    if (intersects[0].object === table && view === 1)
+                    {
+                        lookAtScene = true;
+                        UIAnimator.moveObjectToPosition(camera,
+                                {
+                                    x: 50,
+                                    y: 150,
+                                    z: 0
+                                },
+                        {
+                            duration: 7500,
+                            delay: 30,
+                            animationType: UIAnimator.easing.circ,
+                            complete: function () {
+                                //Hier könnte man eine anschluss animation ausführen
+                                tracking = 1;
+                                view = 2;
+                                console.log("Fertig");
+                            }
+                        });
+                        UIAnimator.rotateObjectAtAxis(notebookBottom, "z", 70, {
+                            duration: 7500,
+                            delay: 10,
+                            animationType: UIAnimator.easing.swing,
+                            complete: function () {
+                                //Hier könnte man eine anschluss animation ausführen
+                                console.log("Fertig");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        if (tracking === 1)
+                            tracking = 2;
+                    }
+                }
+            }
+            renderer.domElement.addEventListener('mousedown', onMouseDown);
 
             //update(keyboard input, ... )
             function update()
             {
-                if (keyboard.pressed("W"))
+                //notebookBottom.rotation.z -= 0.02;
+                if (view === 2 && notebookBottom2.rotation.z >= -2)
                 {
-                    if (camera.position.z >= 290)
-                        camera.position.z = 290;
-                    if (camera.position.x >= 290)
-                        camera.position.x = 290;
-                    if (camera.position.z <= -290)
-                        camera.position.z = -290;
-                    if (camera.position.x <= -290)
-                        camera.position.x = -290;
-                    camera.translateZ(-CAMERAMOVE);
-                    console.log("forward");
-                }
-                if (keyboard.pressed("S"))
-                {
-                    if (camera.position.z >= 290)
-                        camera.position.z = 290;
-                    if (camera.position.x >= 290)
-                        camera.position.x = 290;
-                    if (camera.position.z <= -290)
-                        camera.position.z = -290;
-                    if (camera.position.x <= -290)
-                        camera.position.x = -290;
-                    camera.translateZ(CAMERAMOVE);
-                    console.log("backward");
-                }
-                if (keyboard.pressed("A"))
-                {
-                    if (keyboard.pressed("S")) {
-                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
-                        console.log("right_rot");
-                    }
-                    else {
-                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
-                        console.log("left_rot");
-                    }
-                }
-                if (keyboard.pressed("D"))
-                {
-                    if (keyboard.pressed("S")) {
-                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
-                        console.log("left_rot");
-                    }
-                    else {
-                        camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
-                        console.log("right_rot");
-                    }
-                }
-                if (keyboard.pressed("R"))
-                {
-                    camera.position.set(0, 150, 280);
-                    camera.rotation.set(0, 0, 0);
+                    notebookBottom2.rotation.z -= 0.006;
+                    console.log(notebookBottom2.rotation.z);
                 }
 
-                if (keyboard.pressed("K")) {
-                    console.log("Press K");
-                    
-                }
-
-            };
-
-            document.addEventListener('mousedown', function(event)
-            {
-                console.log("click");
-                UIAnimator.moveObjectToPosition2(camera,
-                            {
-                                x: -100,
-                                y: 180,
-                                z: 0
-                            },
+                if (tracking === 0 && view === 1)
+                {
+                    if (keyboard.pressed("W"))
                     {
-                        duration: 5000,
-                        delay: 10,
-                        animationType: UIAnimator.easing.linear,
-                        complete: function() {
-                            //Hier könnte man eine anschluss animation ausführen
-                            //camera.lookAt(table.position);
-                            console.log("Fertig");
+                        if (camera.position.z >= 290)
+                            camera.position.z = 290;
+                        if (camera.position.x >= 290)
+                            camera.position.x = 290;
+                        if (camera.position.z <= -290)
+                            camera.position.z = -290;
+                        if (camera.position.x <= -290)
+                            camera.position.x = -290;
+                        camera.translateZ(-CAMERAMOVE);
+                        console.log("forward");
+                    }
+                    if (keyboard.pressed("S"))
+                    {
+                        if (camera.position.z >= 290)
+                            camera.position.z = 290;
+                        if (camera.position.x >= 290)
+                            camera.position.x = 290;
+                        if (camera.position.z <= -290)
+                            camera.position.z = -290;
+                        if (camera.position.x <= -290)
+                            camera.position.x = -290;
+                        camera.translateZ(CAMERAMOVE);
+                        console.log("backward");
+                    }
+                    if (keyboard.pressed("A"))
+                    {
+                        if (keyboard.pressed("S")) {
+                            camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
+                            console.log("right_rot");
                         }
-                    });
-            });
+                        else {
+                            camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
+                            console.log("left_rot");
+                        }
+                    }
+                    if (keyboard.pressed("D"))
+                    {
+                        if (keyboard.pressed("S")) {
+                            camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
+                            console.log("left_rot");
+                        }
+                        else {
+                            camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
+                            console.log("right_rot");
+                        }
+                    }
+                    /*if (keyboard.pressed("K")) 
+                     {
+                     lookAtScene = true;
+                     UIAnimator.moveObjectToPosition(camera,
+                     {
+                     x: 50,
+                     y: 150,
+                     z: 0
+                     },
+                     {
+                     duration: 10000,
+                     delay: 30,
+                     animationType: UIAnimator.easing.circ,
+                     complete: function() {
+                     //Hier könnte man eine anschluss animation ausführen
+                     lookAtScene = false;
+                     console.log("Fertig");
+                     }
+                     });
+                     }*/
+                }
+            }
+            ;
 
-            document.addEventListener('keydown', function(e)
+            //
+            document.addEventListener('keydown', function (e)
             {
                 var key = e.keyCode;
 
-                if (key === (KEYUP))
+                if (key === (KEY_UP))
                 {
                     if (camera.position.y < 205)
                         camera.position.y += CAMERAMOVE;
                     console.log("up");
                 }
-                if (key === (KEYDOWN))
+                if (key === (KEY_DOWN))
                 {
-                    if (camera.position.y > 55)
+                    if (camera.position.y > 120)
                         camera.position.y -= CAMERAMOVE;
                     console.log("down");
                 }
+                if (key === KEY_R)
+                {
+                    tracking = (tracking + 1) % 3;
+                }
+                //room_view: 1
+                if (key === KEY_1)
+                {
+                    view = 1;
+                }
+                //table_view: 2
+                if (key === KEY_2)
+                {
+                    view = 2;
+                }
             });
-
         </script>
     </body>
 </html>
