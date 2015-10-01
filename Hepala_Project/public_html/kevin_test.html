@@ -169,9 +169,16 @@
             scene.add( knauf );
 
             //notebook ONLY DUMMY
-            var notebookTopGeo = new THREE.BoxGeometry(50, 2, 80);
-            var notebookTopMat = new THREE.MeshPhongMaterial({color: 0xefefef});
-            var notebookTop = new THREE.Mesh(notebookTopGeo, notebookTopMat);
+            var notebookTopGeo = new THREE.BoxGeometry(50, 2, 80);  
+            var cubeMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
+            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            cubeMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_top.jpg")}));
+            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            var notebookTopMat = new THREE.MeshFaceMaterial(cubeMaterialArray);
+            var notebookTop = new THREE.Mesh(notebookTopGeo, notebookTopMat); 
             notebookTop.castShadow = true;
             notebookTop.receiveShadow = false;
             scene.add(notebookTop);
