@@ -188,14 +188,14 @@
             notebookBottom.castShadow = true;
             notebookBottom.receiveShadow = false;
             scene.add( notebookBottom );
-            var notebookScreenGeo = new THREE.BoxGeometry(45, 1, 75);
+            var notebookScreenGeo = new THREE.BoxGeometry(45, 0, 75);
             var notebookScreenMat = new THREE.MeshPhongMaterial({color: 0x000000});
             var notebookScreen = new THREE.Mesh(notebookScreenGeo, notebookScreenMat);
             scene.add(notebookScreen);
             
             var notebookTop2Geo = new THREE.BoxGeometry(50, 2, 80);
             var notebookTop2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
-            var notebookTop2 = new THREE.Mesh(notebookTop2Geo, notebookTop2Mat);
+            var notebookTop2 = new THREE.Mesh(notebookTop2Geo, notebookTopMat);
             notebookTop2.castShadow = true;
             notebookTop2.receiveShadow = false;
             scene2.add(notebookTop2);
