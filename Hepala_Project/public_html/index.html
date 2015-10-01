@@ -76,7 +76,6 @@
             coverTex.wrapS = THREE.RepeatWrapping;
             coverTex.wrapT = THREE.RepeatWrapping;
             var coverMat = new THREE.MeshBasicMaterial({map:coverTex, });
-            //var coverMat = new THREE.MeshPhongMaterial( { color: 0xfaeffe } );
             var cover = new THREE.Mesh( coverGeo, coverMat );
             scene.add( cover );
 
@@ -86,7 +85,7 @@
             wallTex.wrapS = THREE.RepeatWrapping;
             wallTex.wrapT = THREE.RepeatWrapping;
             var wallMat = new THREE.MeshBasicMaterial({map:wallTex, });
-           // var wallMat = new THREE.MeshPhongMaterial( { color: 0xeaeaea} );
+            
             var wall1 = new THREE.Mesh( wallGeo1, wallMat );
             wall1.castShadow = false;
             wall1.receiveShadow = true;

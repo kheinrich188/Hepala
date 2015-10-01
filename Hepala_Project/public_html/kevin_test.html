@@ -75,35 +75,37 @@
             scene.add(floor);
             //cover
             var coverGeo = new THREE.BoxGeometry(600, 1, 600);
-            var coverMat = new THREE.MeshPhongMaterial({color: 0xfaeffe});
+            var coverTex = new THREE.ImageUtils.loadTexture("images/wall-tex8.jpg")
+            coverTex.wrapS = THREE.RepeatWrapping;
+            coverTex.wrapT = THREE.RepeatWrapping;
+            var coverMat = new THREE.MeshBasicMaterial({map:coverTex, });
             var cover = new THREE.Mesh(coverGeo, coverMat);
             scene.add(cover);
 
             //walls
-            var wallGeo1 = new THREE.BoxGeometry(600, 300, 1);
-            var wallMat1 = new THREE.MeshPhongMaterial({color: 0xeaeaea});
-            var wall1 = new THREE.Mesh(wallGeo1, wallMat1);
+            var wallGeo1 = new THREE.BoxGeometry( 600, 300, 1 );
+            var wallMat = new THREE.MeshBasicMaterial({map:coverTex, });
+            
+            var wall1 = new THREE.Mesh( wallGeo1, wallMat );
             wall1.castShadow = false;
             wall1.receiveShadow = true;
-            scene.add(wall1);
-            var wallGeo2 = new THREE.BoxGeometry(600, 300, 1);
-            var wallMat2 = new THREE.MeshPhongMaterial({color: 0xeaeaea});
-            var wall2 = new THREE.Mesh(wallGeo2, wallMat2);
+            scene.add( wall1 );
+            var wallGeo2 = new THREE.BoxGeometry( 600, 300, 1 );
+            var wall2 = new THREE.Mesh( wallGeo2, wallMat );
             wall2.castShadow = false;
             wall1.receiveShadow = true;
-            scene.add(wall2);
-            var wallGeo3 = new THREE.BoxGeometry(1, 300, 600);
-            var wallMat3 = new THREE.MeshPhongMaterial({color: 0xefefef});
-            var wall3 = new THREE.Mesh(wallGeo3, wallMat3);
+            scene.add( wall2 );
+            var wallGeo3 = new THREE.BoxGeometry( 1, 300, 600 );
+
+            var wall3 = new THREE.Mesh( wallGeo3, wallMat );
             wall3.castShadow = false;
             wall3.receiveShadow = true;
-            scene.add(wall3);
-            var wallGeo4 = new THREE.BoxGeometry(1, 300, 600);
-            var wallMat4 = new THREE.MeshPhongMaterial({color: 0xefefef});
-            var wall4 = new THREE.Mesh(wallGeo4, wallMat4);
+            scene.add( wall3 );    
+            var wallGeo4 = new THREE.BoxGeometry( 1, 300, 600 );
+            var wall4 = new THREE.Mesh( wallGeo4, wallMat );
             wall4.castShadow = false;
             wall4.receiveShadow = true;
-            scene.add(wall4);
+            scene.add( wall4 );
 
             //table & table legs
             var tableGeo = new THREE.BoxGeometry(140, 5, 180);
@@ -136,6 +138,35 @@
             tableLeg4.castShadow = true;
             tableLeg4.receiveShadow = false;
             scene.add(tableLeg4);
+            
+            //Decoration
+            var pictureGeo1 = new THREE.BoxGeometry(1,120,200);
+            var pictureTex1 = new THREE.ImageUtils.loadTexture("images/IMG_2190.jpg")
+            var pictureMat1 = new THREE.MeshBasicMaterial({map:pictureTex1});
+            var picture1 = new THREE.Mesh(pictureGeo1, pictureMat1);
+            picture1.castShadow = true;
+            picture1.receiveShadow = false;
+            scene.add(picture1);
+            var pictureGeo2 = new THREE.BoxGeometry(200,140,1);
+            var pictureTex2 = new THREE.ImageUtils.loadTexture("images/IMG_6627.jpg")
+            var pictureMat2 = new THREE.MeshBasicMaterial({map:pictureTex2});
+            var picture2 = new THREE.Mesh(pictureGeo2, pictureMat2);
+            picture2.castShadow = true;
+            picture2.receiveShadow = false;
+            scene.add(picture2);            
+            var doorGeo = new THREE.BoxGeometry(120,250,5);
+            var doorTex = new THREE.ImageUtils.loadTexture("images/door-tex.jpg")
+            var doorMat = new THREE.MeshBasicMaterial({map:doorTex});
+            var door = new THREE.Mesh(doorGeo, doorMat);
+            door.castShadow = true;
+            door.receiveShadow = false;
+            scene.add(door);  
+            var knaufGeo = new THREE.SphereGeometry( 5, 32, 32 );
+            var knaufMat = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+            var knauf = new THREE.Mesh( knaufGeo, knaufMat );
+            knauf.castShadow = true;
+            knauf.receiveShadow = false;
+            scene.add( knauf );
 
             //notebook ONLY DUMMY
             var notebookTopGeo = new THREE.BoxGeometry(50, 2, 80);
@@ -238,6 +269,11 @@
             lamp2.position.set(0, 285, 0);
             bulb1.position.set(0, 288, 0);
             bulb2.position.set(0, 283, 0);
+            //decoration
+            picture1.position.set(-299,150,0);
+            picture2.position.set(0,150,-299);
+            door.position.set(0,120,300);
+            knauf.position.set(-50,100,295);            
             //notebook
             notebookTop.position.set(160, 105, 0);
             notebookBottom.position.set(160, 103, 0);
