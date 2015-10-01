@@ -175,12 +175,9 @@ function setRotationValue(object, axis, value) {
                 }
             });
         },
-        rotateObjectAtAxis: function (object, axis, degree, options) {
-            var currentAxisValue = getCurrentRotationValue(object, axis);
+        rotateObjectAtAxis: function (threeObject, axis, degree, options) {
+            var currentAxisValue = getCurrentRotationValue(threeObject, axis);
             var rad = radianFromDegree(degree);
-            console.log(currentAxisValue);
-            console.log(rad);
-            
             this.animate({
                 duration: options.duration,
                 delay: options.delay,
@@ -197,7 +194,7 @@ function setRotationValue(object, axis, value) {
                 },
                 complete: options.complete,
                 step: function (delta) {
-                    setRotationValue(object, axis, delta);
+                    setRotationValue(threeObject, axis, delta);
                 }
             });
         }
