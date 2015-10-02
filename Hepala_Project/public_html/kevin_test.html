@@ -170,20 +170,27 @@
 
             //notebook ONLY DUMMY
             var notebookTopGeo = new THREE.BoxGeometry(50, 2, 80);  
-            var cubeMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
-            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            cubeMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_top.jpg")}));
-            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            var notebookTopMat = new THREE.MeshFaceMaterial(cubeMaterialArray);
+            var notebookTopMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
+            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_top_anschluss.jpg")}));
+            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_top.jpg")}));
+            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            var notebookTopMat = new THREE.MeshFaceMaterial(notebookTopMaterialArray);
             var notebookTop = new THREE.Mesh(notebookTopGeo, notebookTopMat); 
             notebookTop.castShadow = true;
             notebookTop.receiveShadow = false;
             scene.add(notebookTop);
             var notebookBottomGeo = new THREE.BoxGeometry(50, 2, 80);
-            var notebookBottomMat = new THREE.MeshPhongMaterial({color: 0xefefef});
+            var notebookBotMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
+            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_anschluss.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_top.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_bot.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_seite_links.jpg")}));
+            var notebookBottomMat = new THREE.MeshFaceMaterial(notebookBotMaterialArray);
             var notebookBottom = new THREE.Mesh(notebookBottomGeo, notebookBottomMat);
             notebookBottom.castShadow = true;
             notebookBottom.receiveShadow = false;
@@ -201,7 +208,7 @@
             scene2.add(notebookTop2);
             var notebookBottom2Geo = new THREE.BoxGeometry(50, 2, 80);
             var notebookBottom2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
-            var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottom2Mat);
+            var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottomMat);
             notebookBottom2.castShadow = true;
             notebookBottom2.receiveShadow = false;
             scene2.add(notebookBottom2);
