@@ -29,6 +29,7 @@
             var view = 1;
             var tracking = 0;                       //0=reset, 1=run, 2=stop
             var pivot = new THREE.Object3D();
+            var pivot2 = new THREE.Object3D();
             //constanten
             var CAMERAMOVE = 3;
             var CAMERAROT = 0.04;
@@ -169,14 +170,14 @@
             scene.add( knauf );
 
             //notebook ONLY DUMMY
-            var notebookTopGeo = new THREE.BoxGeometry(50, 2, 80);  
+            var notebookTopGeo = new THREE.BoxGeometry(51, 2, 80);  
             var notebookTopMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
-            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_top_anschluss.jpg")}));
-            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_top.jpg")}));
-            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            notebookTopMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_top.jpg")}));
+            notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
             var notebookTopMat = new THREE.MeshFaceMaterial(notebookTopMaterialArray);
             var notebookTop = new THREE.Mesh(notebookTopGeo, notebookTopMat); 
             notebookTop.castShadow = true;
@@ -184,37 +185,39 @@
             scene.add(notebookTop);
             var notebookBottomGeo = new THREE.BoxGeometry(50, 2, 80);
             var notebookBotMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
-            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_anschluss.jpg")}));
-            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_top.jpg")}));
-            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_bot.jpg")}));
-            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xc1c1c1}));
-            notebookBotMaterialArray.push(new THREE.MeshBasicMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_seite_links.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_anschluss.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_top.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_bot.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_seite_links.jpg")}));
             var notebookBottomMat = new THREE.MeshFaceMaterial(notebookBotMaterialArray);
             var notebookBottom = new THREE.Mesh(notebookBottomGeo, notebookBottomMat);
             notebookBottom.castShadow = true;
             notebookBottom.receiveShadow = false;
             scene.add( notebookBottom );
-            var notebookScreenGeo = new THREE.BoxGeometry(45, 0, 75);
+            var mirrorCamera = new THREE.CubeCamera(0.1, 500, 512);
+            scene.add( mirrorCamera );
+            var notebookScreenGeo = new THREE.BoxGeometry(45, 2, 75);
             var notebookScreenMat = new THREE.MeshPhongMaterial({color: 0x000000});
             var notebookScreen = new THREE.Mesh(notebookScreenGeo, notebookScreenMat);
             scene.add(notebookScreen);
             
-            var notebookTop2Geo = new THREE.BoxGeometry(50, 2, 80);
+            var notebookTop2Geo = new THREE.BoxGeometry(204, 8, 320);
             var notebookTop2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
             var notebookTop2 = new THREE.Mesh(notebookTop2Geo, notebookTopMat);
             notebookTop2.castShadow = true;
             notebookTop2.receiveShadow = false;
             scene2.add(notebookTop2);
-            var notebookBottom2Geo = new THREE.BoxGeometry(50, 2, 80);
+            var notebookBottom2Geo = new THREE.BoxGeometry(200, 8, 320);
             var notebookBottom2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
-            var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottomMat);
+            var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottom2Mat);
             notebookBottom2.castShadow = true;
             notebookBottom2.receiveShadow = false;
             scene2.add(notebookBottom2);
-            var mirrorCamera = new THREE.CubeCamera(0.1, 300, 512);
-            scene.add( mirrorCamera );
-            var notebookScreen2Geo = new THREE.BoxGeometry(45, 2, 75);
+            var mirrorCamera2 = new THREE.CubeCamera(0.1, 300, 512);
+            scene2.add( mirrorCamera2 );
+            var notebookScreen2Geo = new THREE.BoxGeometry(180, 8, 300);
             var notebookScreen2Mat = new THREE.MeshPhongMaterial({ color: 0x101010, envMap: mirrorCamera.renderTarget});
             var notebookScreen2 = new THREE.Mesh(notebookScreen2Geo, notebookScreen2Mat);
             scene2.add(notebookScreen2);
@@ -288,51 +291,57 @@
             picture2.position.set(0,150,-299);
             door.position.set(0,120,300);
             knauf.position.set(-50,100,295);            
-            //notebook
+            
+            //notebook (szene 1)
             notebookTop.position.set(160, 105, 0);
             notebookBottom.position.set(160, 103, 0);
-            notebookScreen.position.set(160, 103, 0);
-            
-            //pivot for notebook rotation
+            notebookScreen.position.set(160, 104.8, 0);
+            //notebook (open function)
+            var matrix = buildRotationMatrix([24, 0, 0], "z", [0.5, 0, 0]);
+            var matrix2 = buildRotationMatrix([25, 0, 0], "z", [0, 0.2, 0]);          
+            notebookTop.rotation.z = Math.PI;   //1.57 * 2
             pivot.position.set(25, 0, 0);
-            pivot.add(notebookTop2);
-            pivot.add(notebookScreen2);
-            scene2.add(pivot);
-
-            //notebook rotation
-            var final = new THREE.Matrix4();
-                var a = new THREE.Matrix4().makeTranslation(-25,0, 0);
-                var b = new THREE.Matrix4().makeRotationZ(0);
-                var c = new THREE.Matrix4().makeTranslation(0, 0, 0);
-                
-            var final2 = new THREE.Matrix4();
-                var a2 = new THREE.Matrix4().makeTranslation(-25, -0.05, 0);
-                var b2 = new THREE.Matrix4().makeRotationZ(0);
-                var c2 = new THREE.Matrix4().makeTranslation(0, 0, 0);
-
-                final.multiplyMatrices(a,b);
-                final.multiply(c);
-                final2.multiplyMatrices(a2,b2);
-                final2.multiply(c2);
-                notebookTop2.updateMatrix();
-                notebookScreen2.updateMatrix(); 
-                notebookTop2.geometry.applyMatrix(final);
-                notebookScreen2.geometry.applyMatrix(final2);
-                    
-                notebookTop2.matrix.identity();
-                notebookScreen2.matrix.identity();
-                console.log(final);
+            pivot.add(notebookTop);
+            scene.add(pivot);
+            notebookTop.updateMatrix();
+            notebookTop.geometry.applyMatrix(matrix);
+            notebookTop.matrix.identity();
+            notebookScreen.rotation.z = Math.PI;
+            pivot.position.set(25, 0, 0);
+            pivot.add(notebookScreen);
+            notebookScreen.updateMatrix();
+            notebookScreen.geometry.applyMatrix(matrix2);
+            notebookScreen.matrix.identity();
+            //Screen reflection
+            mirrorCamera.position.set(160, 120, 0);
+            mirrorCamera.rotation.z += Math.PI/12;
             
-            notebookTop2.position.set(160, 105, 0);
-            notebookBottom2.position.set(160, 103, 0);
-            notebookScreen2.position.set(160, 105, 0);
-            mirrorCamera.position.set(140, 120, 0);
-            mirrorCamera.rotation.y = Math.PI*2;
-            mirrorCamera.rotation.z = Math.PI/8;
+            //notebook (szene 2)
+            notebookTop2.position.set(160, 50, 0);
+            notebookBottom2.position.set(160, 43, 0);
+            notebookScreen2.position.set(160, 50, 0);  
+            //notebook open function
+            var matrix3 = buildRotationMatrix([96, 0, 0], "z", [2, 0, 0]);
+            var matrix4 = buildRotationMatrix([100, 0, 0], "z", [0, 0.8, 0]);
+            notebookTop2.rotation.z = Math.PI;   //1.57 * 2
+            pivot2.position.set(100, 0, 0);
+            pivot2.add(notebookTop2);
+            scene2.add(pivot2);
 
-            /*******  Targetlist  *******/
-            var tableList = [table, tableLeg1, tableLeg2, tableLeg3, tableLeg4];
-            var notebookList = [notebookTop, notebookBottom];
+            notebookTop2.updateMatrix();
+            notebookTop2.geometry.applyMatrix(matrix3);
+            notebookTop2.matrix.identity();
+            notebookScreen2.rotation.z = Math.PI;
+            pivot2.position.set(100, 0, 0);
+            pivot2.add(notebookScreen2);
+            notebookScreen2.updateMatrix();
+            notebookScreen2.geometry.applyMatrix(matrix4);
+            notebookScreen2.matrix.identity();
+            
+            mirrorCamera2.position.set(140, 110, 0);
+            mirrorCamera2.rotation.y = Math.PI*2;
+            mirrorCamera2.rotation.z = Math.PI/8;
+            
 
             //#################################################################
             //##  FUNCTIONS
@@ -353,64 +362,64 @@
             function render()
             {
                 notebookScreen2.visible = false;
-               // mirrorCamera.position = notebookScreen2.position;
-                //mirrorCamera.lookAt( notebookBottom2.position );
                 mirrorCamera.updateCubeMap( renderer, scene2 );
                 notebookScreen2.visible = true;
-        
-                if (view === 2 && notebookTop2.rotation.z >= -1.8)
+                
+                if((notebookTop.rotation.z).toFixed(2) === (Math.PI*0.9).toFixed(2))
                 {
-                    notebookTop2.rotation.z -= 0.006;
-                    notebookTop2.position.y -= 0.004;
-                    notebookScreen2.rotation.z -= 0.006;
-                    notebookScreen2.position.y -= 0.004;
-                    mirrorCamera.position.y += 0.004;
-                    mirrorCamera.position.x += 0.004; 
-                    console.log(notebookTop2.rotation.z); 
+                    notebookScreen.material = new THREE.MeshPhongMaterial({ color: 0x9090f0, envMap: mirrorCamera.renderTarget});
+                    console.log((notebookTop.rotation.z).toFixed(2) + " " + (Math.PI*0.9).toFixed(2));
                 }
-                //animate camera tracking
-                if (tracking === 1)
+                
+                //animate camera tracking in scene 1
+                if(view === 1)
                 {
-                    var timer = Date.now() * 0.0005;
+                    if (tracking === 1)
+                    {
+                        var timer = Date.now() * 0.0005;
 
-                    camera.position.x = Math.cos(timer) * 100 + 150;
-                    camera.position.z = Math.sin(timer) * 100;
-                    camera.lookAt(notebookTop.position);
-                }
-                if (tracking === 2)
-                {
-                    camera.position.set(50, 150, 0);
-                    camera.rotation.set(0, -Math.PI / 2, 0);
-                    tracking = 0;
-                }
-                if (lookAtScene)
-                    camera.lookAt(notebookTop.position);
-                if (view === 1)
+                        camera.position.x = Math.cos(timer) * 100 + 150;
+                        camera.position.z = Math.sin(timer) * 100;
+                        camera.lookAt(notebookTop.position);
+                    }
+                    if (tracking === 2)
+                    {
+                        camera.position.set(50, 150, 0);
+                        camera.rotation.set(0, -Math.PI / 2, 0);
+                        tracking = 0;
+                    }
+                    if (lookAtScene)
+                        camera.lookAt(notebookTop.position);
                     renderer.render(scene, camera);
-                else if (view === 2)
+                }
+                if(view === 2)
                 {
+                    if (tracking === 1)
+                    {
+                        var timer = Date.now() * 0.0005;
+
+                        camera.position.x = Math.cos(timer) * 100 + 600;
+                        camera.position.z = Math.sin(timer) * 100;
+                        camera.lookAt(notebookTop.position);
+                    }
+                    if (tracking === 2)
+                    {
+                        camera.position.set(200, 600, 0);
+                        camera.rotation.set(0, -Math.PI / 2, 0);
+                        tracking = 0;
+                    }
+                    if (lookAtScene)
+                        camera.lookAt(notebookTop.position);
+                    
                     controls.update();
                     camera.lookAt(notebookTop.position);
                     renderer.render(scene2, camera);
-                }
-                    
+                }                    
             }
 
             //
             function onMouseDown(event)
             {
-                /*return;
-                UIAnimator.rotateObjectAtAxis(notebookList[1], new THREE.Vector3(0, 0, 1), 90, {
-                    duration: 1000,
-                    delay: 10,
-                    animationType: UIAnimator.easing.linear,
-                    complete: function () {
-                        //Hier könnte man eine anschluss animation ausführen
-                        console.log("Fertig");
-                    }
-                });*/
-
-                //return;
                 mouse.x = (event.layerX / renderer.domElement.width) * 2 - 1;
                 mouse.y = 1 - (event.layerY / renderer.domElement.height) * 2;
                 raycaster.setFromCamera(mouse, camera);
@@ -418,26 +427,82 @@
 
                 if (intersects.length > 0)
                 {
-                    if (intersects[0].object === table && view === 1)
+                    if (intersects[0].object === table || intersects[0].object === notebookTop)
                     {
-                        lookAtScene = true;
-                        UIAnimator.moveObjectToPosition(camera,
-                                {
-                                    x: 50,
-                                    y: 150,
-                                    z: 0
-                                },
+                        if(view === 1)
                         {
+                            lookAtScene = true;
+                            UIAnimator.moveObjectToPosition(camera,
+                            {
+                                x: 50,
+                                y: 150,
+                                z: 0
+                            },
+                            {
+                                duration: 7500,
+                                delay: 30,
+                                animationType: UIAnimator.easing.circ,
+                                complete: function () {
+
+                                    //start next function
+                                    UIAnimator.moveObjectToPosition(camera,
+                                    {
+                                        x: 100,
+                                        y: 150,
+                                        z: 0
+                                    },
+                                    {
+                                        duration: 1500,
+                                        delay: 10,
+                                        animationType: UIAnimator.easing.circ,
+                                        complete: function () {
+                                            //Hier könnte man eine anschluss animation ausführen
+                                            view = 2;
+                                            lookAtScene = false;
+                                            notebookIsOpen = true;
+                                            console.log("Fertig");
+                                        }
+                                    });
+                                }
+                            });
+                        
+                            UIAnimator.rotateObjectAtAxis(notebookTop, "z", 70, {
                             duration: 7500,
-                            delay: 30,
-                            animationType: UIAnimator.easing.circ,
-                            complete: function () {
-                                //Hier könnte man eine anschluss animation ausführen
-                                tracking = 1;
-                                view = 2;
-                                console.log("Fertig");
-                            }
-                        });
+                            delay: 10,
+                            animationType: UIAnimator.easing.swing,
+                                complete: function () {
+                                    //Hier könnte man eine anschluss animation ausführen
+                                    //console.log("Fertig");
+                                }
+                            });
+                            UIAnimator.rotateObjectAtAxis(notebookScreen, "z", 70, {
+                            duration: 7500,
+                            delay: 10,
+                            animationType: UIAnimator.easing.swing,
+                                complete: function () {
+                                    //Hier könnte man eine anschluss animation ausführen
+                                    //console.log("Fertig");    
+                                }
+                            });
+                            UIAnimator.rotateObjectAtAxis(notebookTop2, "z", 70, {
+                            duration: 7500,
+                            delay: 10,
+                            animationType: UIAnimator.easing.swing,
+                                complete: function () {
+                                    //Hier könnte man eine anschluss animation ausführen
+                                    //console.log("Fertig");
+                                }
+                            });
+                            UIAnimator.rotateObjectAtAxis(notebookScreen2, "z", 70, {
+                            duration: 7500,
+                            delay: 10,
+                            animationType: UIAnimator.easing.swing,
+                                complete: function () {
+                                    //Hier könnte man eine anschluss animation ausführen
+                                    //console.log("Fertig");    
+                                }
+                            });
+                        }
                     }
                     else
                     {
@@ -464,7 +529,7 @@
                         if (camera.position.x <= -290)
                             camera.position.x = -290;
                         camera.translateZ(-CAMERAMOVE);
-                        console.log("forward");
+                        //console.log("forward");
                     }
                     if (keyboard.pressed("S"))
                     {
@@ -477,50 +542,30 @@
                         if (camera.position.x <= -290)
                             camera.position.x = -290;
                         camera.translateZ(CAMERAMOVE);
-                        console.log("backward");
+                        //console.log("backward");
                     }
                     if (keyboard.pressed("A"))
                     {
                         if (keyboard.pressed("S")) {
                             camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
-                            console.log("right_rot");
+                            //console.log("right_rot");
                         }
                         else {
                             camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
-                            console.log("left_rot");
+                            //console.log("left_rot");
                         }
                     }
                     if (keyboard.pressed("D"))
                     {
                         if (keyboard.pressed("S")) {
                             camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), CAMERAROT);
-                            console.log("left_rot");
+                            //console.log("left_rot");
                         }
                         else {
                             camera.rotateOnAxis(new THREE.Vector3(0, 1, 0), -CAMERAROT);
-                            console.log("right_rot");
+                            //console.log("right_rot");
                         }
                     }
-                    /*if (keyboard.pressed("K")) 
-                     {
-                     lookAtScene = true;
-                     UIAnimator.moveObjectToPosition(camera,
-                     {
-                     x: 50,
-                     y: 150,
-                     z: 0
-                     },
-                     {
-                     duration: 10000,
-                     delay: 30,
-                     animationType: UIAnimator.easing.circ,
-                     complete: function() {
-                     //Hier könnte man eine anschluss animation ausführen
-                     lookAtScene = false;
-                     console.log("Fertig");
-                     }
-                     });
-                     }*/
                 }
             }
 
@@ -548,6 +593,11 @@
                 //room_view: 1
                 if (key === KEY_1)
                 {
+                    if(view === 2)
+                    {
+                        camera.position.set(50, 150, 0);
+                        camera.rotation.set(0, -Math.PI / 2, 0);
+                    }
                     view = 1;
                 }
                 //table_view: 2
