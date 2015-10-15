@@ -75,18 +75,16 @@
             floor.receiveShadow = true;
             scene.add(floor);
             //cover
+            //cover
             var coverGeo = new THREE.BoxGeometry(600, 1, 600);
-            var coverTex = new THREE.ImageUtils.loadTexture("images/wall-tex8.jpg")
-            coverTex.wrapS = THREE.RepeatWrapping;
-            coverTex.wrapT = THREE.RepeatWrapping;
-            var coverMat = new THREE.MeshBasicMaterial({map:coverTex, });
+            var coverMat = new THREE.MeshPhongMaterial({color: 0xfaeffe});
             var cover = new THREE.Mesh(coverGeo, coverMat);
             scene.add(cover);
 
             //walls
+            var wallTex = new THREE.ImageUtils.loadTexture("images/wall-tex8.jpg");
             var wallGeo1 = new THREE.BoxGeometry( 600, 300, 1 );
-            var wallMat = new THREE.MeshBasicMaterial({map:coverTex, });
-            
+            var wallMat = new THREE.MeshPhongMaterial({map: wallTex, color: 0xfaeffe});           
             var wall1 = new THREE.Mesh( wallGeo1, wallMat );
             wall1.castShadow = false;
             wall1.receiveShadow = true;
@@ -97,7 +95,6 @@
             wall1.receiveShadow = true;
             scene.add( wall2 );
             var wallGeo3 = new THREE.BoxGeometry( 1, 300, 600 );
-
             var wall3 = new THREE.Mesh( wallGeo3, wallMat );
             wall3.castShadow = false;
             wall3.receiveShadow = true;
@@ -109,32 +106,34 @@
             scene.add( wall4 );
 
             //table & table legs
+            var tableTexture = THREE.ImageUtils.loadTexture('images/table_Tex.jpg');
             var tableGeo = new THREE.BoxGeometry(140, 5, 180);
-            var tableMat = new THREE.MeshPhongMaterial({color: 0x5555ff, specular: 0x505050, shininess: 50});
+            var tableMat = new THREE.MeshPhongMaterial({color: 0xDEB887, map: tableTexture, specular: 0x505050, shininess: 50});
+            tableMat.map.minFilter = THREE.LinearFilter;
             var table = new THREE.Mesh(tableGeo, tableMat);
             table.castShadow = true;
             table.receiveShadow = true;
             scene.add(table);
             var tableLeg1Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg1Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg1Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
             var tableLeg1 = new THREE.Mesh(tableLeg1Geo, tableLeg1Mat);
             tableLeg1.castShadow = true;
             tableLeg1.receiveShadow = false;
             scene.add(tableLeg1);
             var tableLeg2Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg2Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg2Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
             var tableLeg2 = new THREE.Mesh(tableLeg2Geo, tableLeg2Mat);
             tableLeg2.castShadow = true;
             tableLeg2.receiveShadow = false;
             scene.add(tableLeg2);
             var tableLeg3Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg3Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg3Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
             var tableLeg3 = new THREE.Mesh(tableLeg3Geo, tableLeg3Mat);
             tableLeg3.castShadow = true;
             tableLeg3.receiveShadow = false;
             scene.add(tableLeg3);
             var tableLeg4Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg4Mat = new THREE.MeshPhongMaterial({color: 0x0000ff, specular: 0x505050, shininess: 50});
+            var tableLeg4Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
             var tableLeg4 = new THREE.Mesh(tableLeg4Geo, tableLeg4Mat);
             tableLeg4.castShadow = true;
             tableLeg4.receiveShadow = false;
