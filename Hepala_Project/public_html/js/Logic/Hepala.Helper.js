@@ -118,13 +118,21 @@ function setRotationValue(object, axis, value) {
          */
         moveObjectToPosition: function (threeObject, endPosition, options) {
             var startposition = threeObject.position;
-
+            
             //math.abs wegen negativ zu positiv
             var xDif = Math.abs(endPosition.x - startposition.x);
             var yDif = Math.abs(endPosition.y - startposition.y);
             var zDif = Math.abs(endPosition.z - startposition.z);
             //array, damit ich besser min,max aufrufen kann
             var diffArray = [xDif, yDif, zDif];
+            
+            if(startposition.x === endPosition.x && startposition.y === endPosition.y && startposition.z === endPosition.z)
+            {
+                console.log("Fehler, Start = Ende!");
+                options.complete;
+                options.duration = 0;
+                options.delay = 360;
+            }
             var max = diffArray.max();
             //nimm den größten wert. hier dauert die animation exakt die länge der duration
             //kann man nachvollziehen, wenn man die animation nur auf den max wert anwendet (der wert der genau 1 ist)
@@ -149,6 +157,7 @@ function setRotationValue(object, axis, value) {
                     }
                     //percent ist der wert der die animation dauert (nach der hälfte 0.5 bei fertig = 1)
                     var percent = progress / options.duration;
+                    
                     //setzte werte in Relation
                     var percentx = percent * percentX;
                     var percenty = percent * percentY;

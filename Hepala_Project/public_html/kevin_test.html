@@ -75,7 +75,6 @@
             floor.receiveShadow = true;
             scene.add(floor);
             //cover
-            //cover
             var coverGeo = new THREE.BoxGeometry(600, 1, 600);
             var coverMat = new THREE.MeshPhongMaterial({color: 0xfaeffe});
             var cover = new THREE.Mesh(coverGeo, coverMat);
@@ -108,8 +107,8 @@
             //table & table legs
             var tableTexture = THREE.ImageUtils.loadTexture('images/table_Tex.jpg');
             var tableGeo = new THREE.BoxGeometry(140, 5, 180);
-            var tableMat = new THREE.MeshPhongMaterial({color: 0xDEB887, map: tableTexture, specular: 0x505050, shininess: 50});
-            tableMat.map.minFilter = THREE.LinearFilter;
+            var tableMat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50/*color: 0xDEB887, map: tableTexture*/});
+            //tableMat.map.minFilter = THREE.LinearFilter;
             var table = new THREE.Mesh(tableGeo, tableMat);
             table.castShadow = true;
             table.receiveShadow = true;
@@ -140,7 +139,7 @@
             scene.add(tableLeg4);
             
             //Decoration
-            var pictureGeo1 = new THREE.BoxGeometry(1,120,200);
+            /*var pictureGeo1 = new THREE.BoxGeometry(1,120,200);
             var pictureTex1 = new THREE.ImageUtils.loadTexture("images/IMG_2190.jpg")
             var pictureMat1 = new THREE.MeshBasicMaterial({map:pictureTex1});
             var picture1 = new THREE.Mesh(pictureGeo1, pictureMat1);
@@ -153,7 +152,7 @@
             var picture2 = new THREE.Mesh(pictureGeo2, pictureMat2);
             picture2.castShadow = true;
             picture2.receiveShadow = false;
-            scene.add(picture2);            
+            scene.add(picture2);*/          
             var doorGeo = new THREE.BoxGeometry(120,250,5);
             var doorTex = new THREE.ImageUtils.loadTexture("images/door-tex.jpg")
             var doorMat = new THREE.MeshBasicMaterial({map:doorTex});
@@ -184,10 +183,10 @@
             scene.add(notebookTop);
             var notebookBottomGeo = new THREE.BoxGeometry(50, 2, 80);
             var notebookBotMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
-            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_anschluss.jpg")}));
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
-            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_top.jpg")}));
-            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_bot.jpg")}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_seite_links.jpg")}));
             var notebookBottomMat = new THREE.MeshFaceMaterial(notebookBotMaterialArray);
@@ -210,7 +209,7 @@
             scene2.add(notebookTop2);
             var notebookBottom2Geo = new THREE.BoxGeometry(200, 8, 320);
             var notebookBottom2Mat = new THREE.MeshPhongMaterial({color: 0xefefef});
-            var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottom2Mat);
+            var notebookBottom2 = new THREE.Mesh(notebookBottom2Geo, notebookBottomMat);
             notebookBottom2.castShadow = true;
             notebookBottom2.receiveShadow = false;
             scene2.add(notebookBottom2);
@@ -286,8 +285,8 @@
             bulb1.position.set(0, 288, 0);
             bulb2.position.set(0, 283, 0);
             //decoration
-            picture1.position.set(-299,150,0);
-            picture2.position.set(0,150,-299);
+            /*picture1.position.set(-299,150,0);
+            picture2.position.set(0,150,-299);*/
             door.position.set(0,120,300);
             knauf.position.set(-50,100,295);            
             
@@ -367,7 +366,7 @@
                 if((notebookTop.rotation.z).toFixed(2) === (Math.PI*0.9).toFixed(2))
                 {
                     notebookScreen.material = new THREE.MeshPhongMaterial({ color: 0x9090f0, envMap: mirrorCamera.renderTarget});
-                    console.log((notebookTop.rotation.z).toFixed(2) + " " + (Math.PI*0.9).toFixed(2));
+                    //console.log((notebookTop.rotation.z).toFixed(2) + " " + (Math.PI*0.9).toFixed(2));
                 }
                 
                 //animate camera tracking in scene 1
@@ -397,9 +396,9 @@
                     {
                         var timer = Date.now() * 0.0005;
 
-                        camera.position.x = Math.cos(timer) * 100 + 600;
+                        camera.position.x = Math.cos(timer) * 100 + 150;
                         camera.position.z = Math.sin(timer) * 100;
-                        camera.lookAt(notebookTop.position);
+                        camera.lookAt(notebookTop2.position);
                     }
                     if (tracking === 2)
                     {
@@ -408,10 +407,9 @@
                         tracking = 0;
                     }
                     if (lookAtScene)
-                        camera.lookAt(notebookTop.position);
+                        camera.lookAt(notebookTop2.position);
                     
                     controls.update();
-                    camera.lookAt(notebookTop.position);
                     renderer.render(scene2, camera);
                 }                    
             }
@@ -442,26 +440,10 @@
                                 delay: 30,
                                 animationType: UIAnimator.easing.circ,
                                 complete: function () {
-
-                                    //start next function
-                                    UIAnimator.moveObjectToPosition(camera,
-                                    {
-                                        x: 100,
-                                        y: 150,
-                                        z: 0
-                                    },
-                                    {
-                                        duration: 1500,
-                                        delay: 10,
-                                        animationType: UIAnimator.easing.circ,
-                                        complete: function () {
-                                            //Hier könnte man eine anschluss animation ausführen
-                                            view = 2;
-                                            lookAtScene = false;
-                                            notebookIsOpen = true;
-                                            console.log("Fertig");
-                                        }
-                                    });
+                                    view = 2;
+                                    lookAtScene = false;
+                                    notebookIsOpen = true;
+                                    console.log("Fertig");                                   
                                 }
                             });
                         
@@ -602,6 +584,11 @@
                 //table_view: 2
                 if (key === KEY_2)
                 {
+                    if(view === 1)
+                    {
+                        camera.position.set(0, 400, 0);
+                        camera.rotation.set(0, -Math.PI / 2, 0);
+                    }
                     view = 2;
                 }
             });
