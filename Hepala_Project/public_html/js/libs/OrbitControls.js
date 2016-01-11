@@ -16,7 +16,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	this.enabled = true;
 
-	this.center = new THREE.Vector3(160,103,0);     // default: 0,0,0
+	this.center = new THREE.Vector3(200,103,0);     // default: 0,0,0
 
 	this.userZoom = true;
 	this.userZoomSpeed = 1.0;
@@ -33,8 +33,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.minPolarAngle = 0; // radians
 	this.maxPolarAngle = Math.PI; // radians
 
-	this.minDistance = 50;      // default: 0
-	this.maxDistance = 250;     // default: undefined
+	this.minDistance = 150;      // default: 0
+	this.maxDistance = 400;     // default: undefined
 
 	// 65 /*A*/, 83 /*S*/, 68 /*D*/
 	this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40, ROTATE: 65, ZOOM: 83, PAN: 68 };

@@ -8,6 +8,7 @@
         <link rel="shortcut icon" href="">
     </head>
     <body>
+        <script type="text/javascript" src="js/libs/jquery-2.1.4.js"></script>
         <script src="js/libs/three.js"></script>
         <script src="js/libs/three.min.js"></script>
         <script src="js/libs/THREEx.KeyboardState.js"></script>
@@ -50,7 +51,7 @@
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
-            renderer.setClearColor(0xaaaaff);
+            renderer.setClearColor(0xffffff);
             renderer.shadowMapEnabled = true;
             // to antialias the shadow
             renderer.shadowMapType = THREE.PCFSoftShadowMap;
@@ -76,7 +77,7 @@
             scene.add(floor);
             //cover
             var coverGeo = new THREE.BoxGeometry(600, 1, 600);
-            var coverMat = new THREE.MeshPhongMaterial({color: 0xfaeffe});
+            var coverMat = new THREE.MeshPhongMaterial({color: 0xffffff});
             var cover = new THREE.Mesh(coverGeo, coverMat);
             scene.add(cover);
 
@@ -107,39 +108,39 @@
             //table & table legs
             var tableTexture = THREE.ImageUtils.loadTexture('images/table_Tex.jpg');
             var tableGeo = new THREE.BoxGeometry(140, 5, 180);
-            var tableMat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50/*color: 0xDEB887, map: tableTexture*/});
-            //tableMat.map.minFilter = THREE.LinearFilter;
+            var tableMat = new THREE.MeshPhongMaterial({color: 0xDEB887, map: tableTexture});
+            tableMat.map.minFilter = THREE.LinearFilter;
             var table = new THREE.Mesh(tableGeo, tableMat);
             table.castShadow = true;
             table.receiveShadow = true;
             scene.add(table);
             var tableLeg1Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg1Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
+            var tableLeg1Mat = new THREE.MeshPhongMaterial({color: 0xE0E0E0, specular: 0x505050, shininess: 50});
             var tableLeg1 = new THREE.Mesh(tableLeg1Geo, tableLeg1Mat);
             tableLeg1.castShadow = true;
             tableLeg1.receiveShadow = false;
             scene.add(tableLeg1);
             var tableLeg2Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg2Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
+            var tableLeg2Mat = new THREE.MeshPhongMaterial({color: 0xE0E0E0, specular: 0x505050, shininess: 50});
             var tableLeg2 = new THREE.Mesh(tableLeg2Geo, tableLeg2Mat);
             tableLeg2.castShadow = true;
             tableLeg2.receiveShadow = false;
             scene.add(tableLeg2);
             var tableLeg3Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg3Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
+            var tableLeg3Mat = new THREE.MeshPhongMaterial({color: 0xE0E0E0, specular: 0x505050, shininess: 50});
             var tableLeg3 = new THREE.Mesh(tableLeg3Geo, tableLeg3Mat);
             tableLeg3.castShadow = true;
             tableLeg3.receiveShadow = false;
             scene.add(tableLeg3);
             var tableLeg4Geo = new THREE.CylinderGeometry(6, 6, 100, 32);
-            var tableLeg4Mat = new THREE.MeshPhongMaterial({color: 0xCD853F, specular: 0x505050, shininess: 50});
+            var tableLeg4Mat = new THREE.MeshPhongMaterial({color: 0xE0E0E0, specular: 0x505050, shininess: 50});
             var tableLeg4 = new THREE.Mesh(tableLeg4Geo, tableLeg4Mat);
             tableLeg4.castShadow = true;
             tableLeg4.receiveShadow = false;
             scene.add(tableLeg4);
             
             //Decoration
-            /*var pictureGeo1 = new THREE.BoxGeometry(1,120,200);
+            var pictureGeo1 = new THREE.BoxGeometry(1,120,200);
             var pictureTex1 = new THREE.ImageUtils.loadTexture("images/IMG_2190.jpg")
             var pictureMat1 = new THREE.MeshBasicMaterial({map:pictureTex1});
             var picture1 = new THREE.Mesh(pictureGeo1, pictureMat1);
@@ -152,7 +153,7 @@
             var picture2 = new THREE.Mesh(pictureGeo2, pictureMat2);
             picture2.castShadow = true;
             picture2.receiveShadow = false;
-            scene.add(picture2);*/          
+            scene.add(picture2);          
             var doorGeo = new THREE.BoxGeometry(120,250,5);
             var doorTex = new THREE.ImageUtils.loadTexture("images/door-tex.jpg")
             var doorMat = new THREE.MeshBasicMaterial({map:doorTex});
@@ -169,6 +170,7 @@
 
             //notebook ONLY DUMMY
             var notebookTopGeo = new THREE.BoxGeometry(51, 2, 80);  
+
             var notebookTopMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
             notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
             notebookTopMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
@@ -185,7 +187,7 @@
             var notebookBotMaterialArray = []; //Reihenfolge: x+,x-,y+,y-,z+,z-
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
-            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
+            notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/tastatur.jpg")}));
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({color: 0xc1c1c1}));
             notebookBotMaterialArray.push(new THREE.MeshPhongMaterial({map: new THREE.ImageUtils.loadTexture("images/notebook_bottom_seite_links.jpg")}));
@@ -194,8 +196,8 @@
             notebookBottom.castShadow = true;
             notebookBottom.receiveShadow = false;
             scene.add( notebookBottom );
-            var mirrorCamera = new THREE.CubeCamera(0.1, 500, 512);
-            scene.add( mirrorCamera );
+            var mirrorCamera = new THREE.CubeCamera(1, 100000, 512);
+            //scene.add( mirrorCamera );
             var notebookScreenGeo = new THREE.BoxGeometry(45, 2, 75);
             var notebookScreenMat = new THREE.MeshPhongMaterial({color: 0x000000});
             var notebookScreen = new THREE.Mesh(notebookScreenGeo, notebookScreenMat);
@@ -216,7 +218,8 @@
             var mirrorCamera2 = new THREE.CubeCamera(0.1, 300, 512);
             scene2.add( mirrorCamera2 );
             var notebookScreen2Geo = new THREE.BoxGeometry(180, 8, 300);
-            var notebookScreen2Mat = new THREE.MeshPhongMaterial({ color: 0x101010, envMap: mirrorCamera.renderTarget});
+            var wallpaper = THREE.ImageUtils.loadTexture('images/ScreenWallpaper.png');
+            var notebookScreen2Mat = new THREE.MeshPhongMaterial({map:wallpaper, color: 0xffffff, envMap: mirrorCamera.renderTarget});
             var notebookScreen2 = new THREE.Mesh(notebookScreen2Geo, notebookScreen2Mat);
             scene2.add(notebookScreen2);
 
@@ -224,11 +227,11 @@
             /*******   LIGHT   *******/
             //lamp
             var lampGeo = new THREE.CylinderGeometry(2, 15, 13, 10, 1, true);
-            var lampMat = new THREE.MeshPhongMaterial({color: 0xff0000, specular: 0xffffff, shininess: 1});
+            var lampMat = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0xffffff, shininess: 1});
             var lamp = new THREE.Mesh(lampGeo, lampMat);
             scene.add(lamp);
             var lamp2Geo = new THREE.CylinderGeometry(10, 14, 2, 30);
-            var lamp2Mat = new THREE.MeshBasicMaterial({color: 0xff5555, specular: 0xff0000, shininess: 1});
+            var lamp2Mat = new THREE.MeshBasicMaterial({color: 0xffffff, specular: 0xff0000, shininess: 1});
             var lamp2 = new THREE.Mesh(lamp2Geo, lamp2Mat);
             scene.add(lamp2);
             var bulb1Geo = new THREE.DodecahedronGeometry(2, 0);
@@ -245,14 +248,14 @@
             spotlight.castShadow = true;
             spotlight.shadowCameraFov = 500;
             spotlight.shadowDarkness = 0.5;
-            spotlight.shadowCameraVisible = true;
+            //spotlight.shadowCameraVisible = true;
             scene.add( spotlight );
             var spotlight2 = new THREE.SpotLight( 0xffffff, 0.8, 0, 1.711, 0.5 );
             spotlight2.position.set( 0, 300, 0 );
             spotlight2.castShadow = true;
             spotlight2.shadowCameraFov = 500;
             spotlight2.shadowDarkness = 0.5;
-            spotlight2.shadowCameraVisible = true;
+            //spotlight2.shadowCameraVisible = true;
             scene2.add( spotlight2 );
             var spotlight3 = new THREE.SpotLight( 0x606060, 0.8, 0, 1.711, 0.5 );
             spotlight3.position.set( 0, -300, 0 );
@@ -285,8 +288,8 @@
             bulb1.position.set(0, 288, 0);
             bulb2.position.set(0, 283, 0);
             //decoration
-            /*picture1.position.set(-299,150,0);
-            picture2.position.set(0,150,-299);*/
+            picture1.position.set(-299,150,0);
+            picture2.position.set(0,150,-299);
             door.position.set(0,120,300);
             knauf.position.set(-50,100,295);            
             
@@ -339,7 +342,7 @@
             mirrorCamera2.position.set(140, 110, 0);
             mirrorCamera2.rotation.y = Math.PI*2;
             mirrorCamera2.rotation.z = Math.PI/8;
-            
+         
 
             //#################################################################
             //##  FUNCTIONS
@@ -355,56 +358,100 @@
             ;
             //start_function
             animate();
-
+            
+                
             //renderer_function
             function render()
             {
+                var timer = Date.now() * 0.0005;
                 notebookScreen2.visible = false;
                 mirrorCamera.updateCubeMap( renderer, scene2 );
                 notebookScreen2.visible = true;
                 
                 if((notebookTop.rotation.z).toFixed(2) === (Math.PI*0.9).toFixed(2))
                 {
-                    notebookScreen.material = new THREE.MeshPhongMaterial({ color: 0x9090f0, envMap: mirrorCamera.renderTarget});
+                    notebookScreen.material = new THREE.MeshPhongMaterial({map:wallpaper, color: 0xffffff, envMap: mirrorCamera.renderTarget});
                     //console.log((notebookTop.rotation.z).toFixed(2) + " " + (Math.PI*0.9).toFixed(2));
+                    //var notebookScreenMat = new THREE.MeshPhongMaterial({map:wallpaper, color: 0xffffff, envMap: mirrorCamera.renderTarget});
+            
                 }
-                
+            
                 //animate camera tracking in scene 1
-                if(view === 1)
+                if(view == 1)
                 {
-                    if (tracking === 1)
-                    {
-                        var timer = Date.now() * 0.0005;
 
+                    if (tracking == 1)
+                    {
+                        lookAtScene = true;
                         camera.position.x = Math.cos(timer) * 100 + 150;
                         camera.position.z = Math.sin(timer) * 100;
                         camera.lookAt(notebookTop.position);
+                        
                     }
-                    if (tracking === 2)
+                    if (tracking == 2)
                     {
-                        camera.position.set(50, 150, 0);
-                        camera.rotation.set(0, -Math.PI / 2, 0);
-                        tracking = 0;
+                        
+                        UIAnimator.moveObjectToPosition(camera,
+                            {
+                                x: 50,
+                                y: 150,
+                                z: 0
+                            },
+                            {
+                                duration: 2000,
+                                delay: 30,
+                                animationType: UIAnimator.easing.circ,
+                                complete: function () {
+                                    //view = 2;
+                                    //lookAtScene = false;
+                                    //notebookIsOpen = true;
+                                    console.log("Fertig Move Back");
+                                    lookAtScene = false;
+                                    camera.rotation.set(0, -Math.PI / 2, 0);
+
+                                }
+                            });
+                        //   tracking = 0;
+                        
+                        tracking = 0
                     }
                     if (lookAtScene)
                         camera.lookAt(notebookTop.position);
                     renderer.render(scene, camera);
                 }
-                if(view === 2)
+                
+                if(view == 2)
                 {
-                    if (tracking === 1)
-                    {
-                        var timer = Date.now() * 0.0005;
+                    console.log(tracking);
 
+                    if (tracking == 1)
+                    {
+                        var timer2 = Date.now() * 0.0005;
                         camera.position.x = Math.cos(timer) * 100 + 150;
                         camera.position.z = Math.sin(timer) * 100;
                         camera.lookAt(notebookTop2.position);
                     }
-                    if (tracking === 2)
+                    if (tracking == 2)
                     {
-                        camera.position.set(200, 600, 0);
-                        camera.rotation.set(0, -Math.PI / 2, 0);
-                        tracking = 0;
+                        UIAnimator.moveObjectToPosition(camera,
+                            {
+                                x: 0,
+                                y: 200,
+                                z: 0
+                            },
+                            {
+                                duration: 2000,
+                                delay: 30,
+                                animationType: UIAnimator.easing.circ,
+                                complete: function () {
+                                    //view = 2;
+                                    //lookAtScene = false;
+                                    //notebookIsOpen = true;
+                                    console.log("Fertig Move Back");
+                                }
+                            });
+                           tracking = 0;
+                        
                     }
                     if (lookAtScene)
                         camera.lookAt(notebookTop2.position);
@@ -424,9 +471,7 @@
 
                 if (intersects.length > 0)
                 {
-                    if (intersects[0].object === table || intersects[0].object === notebookTop)
-                    {
-                        if(view === 1)
+                        if((view == 1 && intersects[0].object == table)|| (view == 2 && intersects[0].object == notebookTop2))
                         {
                             lookAtScene = true;
                             UIAnimator.moveObjectToPosition(camera,
@@ -441,12 +486,14 @@
                                 animationType: UIAnimator.easing.circ,
                                 complete: function () {
                                     view = 2;
+                                 
                                     lookAtScene = false;
                                     notebookIsOpen = true;
-                                    console.log("Fertig");                                   
+                                    console.log("Fertig");
+                                    //camera.position.set(0,200,0)
+                                                             
                                 }
                             });
-                        
                             UIAnimator.rotateObjectAtAxis(notebookTop, "z", 70, {
                             duration: 7500,
                             delay: 10,
@@ -483,11 +530,11 @@
                                     //console.log("Fertig");    
                                 }
                             });
-                        }
+                        
                     }
                     else
                     {
-                        if (tracking === 1)
+                        if (tracking == 1)
                             tracking = 2;
                     }
                 }
@@ -497,7 +544,7 @@
             //update(keyboard input, ... )
             function update()
             {   
-                if (tracking === 0 && view === 1)
+                if (tracking == 0 && view == 1)
                 {
                     if (keyboard.pressed("W"))
                     {
@@ -555,26 +602,26 @@
             {
                 var key = e.keyCode;
 
-                if (key === (KEY_UP))
+                if (key == (KEY_UP))
                 {
                     if (camera.position.y < 205)
                         camera.position.y += CAMERAMOVE;
                     console.log("up");
                 }
-                if (key === (KEY_DOWN))
+                if (key == (KEY_DOWN))
                 {
                     if (camera.position.y > 120)
                         camera.position.y -= CAMERAMOVE;
                     console.log("down");
                 }
-                if (key === KEY_R)
+                if (key == KEY_R)
                 {
                     tracking = (tracking + 1) % 3;
                 }
                 //room_view: 1
-                if (key === KEY_1)
+                if (key == KEY_1)
                 {
-                    if(view === 2)
+                    if(view == 2)
                     {
                         camera.position.set(50, 150, 0);
                         camera.rotation.set(0, -Math.PI / 2, 0);
@@ -582,9 +629,9 @@
                     view = 1;
                 }
                 //table_view: 2
-                if (key === KEY_2)
+                if (key == KEY_2)
                 {
-                    if(view === 1)
+                    if(view == 1)
                     {
                         camera.position.set(0, 400, 0);
                         camera.rotation.set(0, -Math.PI / 2, 0);
@@ -592,6 +639,42 @@
                     view = 2;
                 }
             });
+
+            $(document).ready(function() {
+                  $('#helpButton').click(function(){
+                        $('#infoDialog').css("display", "block");
+                  });
+                  $('#closeInfoBox').click(function(){
+                        $('#infoDialog').css("display", "none");
+                  });
+            })
         </script>
+        <div style="position:absolute;left:0px;top:0px">
+            <input style="widht:100px;height:100px;" id="helpButton" type="button" value="Hilfe"></input>
+        </div>
+
+        <div style="width: 400px;position: absolute; left: 50%;margin-left: -200px;top:100px;display:none;background-color:white;opacity:0.8;border-radius:10px;border:2px solid black;padding:10px" id="infoDialog">
+            <h1>Hilfe</h1>
+            <p>Scene 1:</p>
+            <ol>
+                  <li>W - Vorw&auml;rts</li>
+                  <li>A - Links drehen</li>
+                  <li>S - R&uuml;ckw&auml;rts</li>
+                  <li>D - Rechts drehen</li>
+                  <li>Pfeiltaste hoch - H&ouml;her</li>
+                  <li>Pfeiltaste runter - Tiefer</li>
+                  <li>R - Rotationsansicht</li>
+                  <li>Klick auf den Tisch &ouml;ffnet animiert Scene 2</li>
+            </ol>
+            <p>Scene 2:</p>
+            <ol>
+                  <li>Mausrad - Zoom</li>
+                  <li>Pfeiltaste hoch - H&ouml;her</li>
+                  <li>Pfeiltaste runter - Tiefer</li>
+                  <li>Linke Maustaste - Rundumsicht</li>
+                  <li>R - Rotationsansicht</li>
+            </ol>
+            <input type="button" id="closeInfoBox" style="float:right" value="Schlie&szlig;en"></input>
+        </div>
     </body>
 </html>

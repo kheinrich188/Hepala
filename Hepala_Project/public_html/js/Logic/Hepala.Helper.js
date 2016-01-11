@@ -126,12 +126,12 @@ function setRotationValue(object, axis, value) {
             //array, damit ich besser min,max aufrufen kann
             var diffArray = [xDif, yDif, zDif];
             
-            if(startposition.x === endPosition.x && startposition.y === endPosition.y && startposition.z === endPosition.z)
+            if(startposition.x == endPosition.x && startposition.y == endPosition.y && startposition.z == endPosition.z)
             {
                 console.log("Fehler, Start = Ende!");
-                options.complete;
                 options.duration = 0;
                 options.delay = 360;
+                options.complete;
             }
             var max = diffArray.max();
             //nimm den größten wert. hier dauert die animation exakt die länge der duration
