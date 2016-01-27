@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            body { margin: 0; }
+            body { margin: 0; overflow: hidden; }
             canvas { width: 100%; height: 100% }
         </style>
         <link rel="shortcut icon" href="">
@@ -210,9 +210,10 @@
             notebookBottom.receiveShadow = false;
             scene.add(notebookBottom);
             var mirrorCamera = new THREE.CubeCamera(1, 100000, 512);
-            //scene.add( mirrorCamera );
+            var wallpaper = THREE.ImageUtils.loadTexture('images/ScreenWallpaper.png');
+            wallpaper.minFilter = THREE.LinearFilter;
             var notebookScreenGeo = new THREE.BoxGeometry(45, 2, 75);
-            var notebookScreenMat = new THREE.MeshPhongMaterial({color: 0x000000});
+            var notebookScreenMat = new THREE.MeshPhongMaterial({map: wallpaper, color: 0x000000});
             var notebookScreen = new THREE.Mesh(notebookScreenGeo, notebookScreenMat);
             scene.add(notebookScreen);
 
@@ -231,8 +232,7 @@
             var mirrorCamera2 = new THREE.CubeCamera(0.1, 300, 512);
             scene2.add(mirrorCamera2);
             var notebookScreen2Geo = new THREE.BoxGeometry(180, 8, 300);
-            var wallpaper = THREE.ImageUtils.loadTexture('images/ScreenWallpaper.png');
-            var notebookScreen2Mat = new THREE.MeshPhongMaterial({map: wallpaper, color: 0xffffff, envMap: mirrorCamera.renderTarget});
+            var notebookScreen2Mat = new THREE.MeshPhongMaterial({map: wallpaper, color: 0x000000, envMap: mirrorCamera.renderTarget});
             var notebookScreen2 = new THREE.Mesh(notebookScreen2Geo, notebookScreen2Mat);
             scene2.add(notebookScreen2);
 
@@ -382,9 +382,11 @@
                 mirrorCamera.updateCubeMap(renderer, scene2);
                 notebookScreen2.visible = true;
 
-                if ((notebookTop.rotation.z).toFixed(2) === (Math.PI * 0.9).toFixed(2))
+                
+                if ((notebookTop.rotation.z).toFixed(2) == (Math.PI * 0.8).toFixed(2))
                 {
-                    notebookScreen.material = new THREE.MeshPhongMaterial({map: wallpaper, color: 0xffffff, envMap: mirrorCamera.renderTarget});
+                    notebookScreen.material = new THREE.MeshPhongMaterial({map: wallpaper, color: 0xffffff});
+                    notebookScreen2.material = new THREE.MeshPhongMaterial({map: wallpaper, color: 0xffffff});
                 }
 
                 //animate camera tracking in scene 1
@@ -419,7 +421,7 @@
                             }
                         });
                         
-                        tracking = 0
+                        tracking = 0;
                     }
                     if (lookAtScene)
                         camera.lookAt(notebookTop.position);
@@ -473,7 +475,7 @@
                 {
                     if (view == 1 && intersects[0].object == table)
                     {
-                        lookAtScene = true;
+                        lookAtScene = true;                        
                         UIAnimator.moveObjectToPosition(camera,
                                 {
                                     x: 50,
@@ -527,13 +529,12 @@
    
                             }
                         });
-
                     }
                     else
                     {
                         if (tracking == 1)
                             tracking = 2;
-                    }
+                    }                                      
                 }
             }
             renderer.domElement.addEventListener('mousedown', onMouseDown);
@@ -624,7 +625,7 @@
                 {
                     if (view == 1)
                     {
-                        camera.position.set(0, 200, 0);
+                        camera.position.set(0, 150, 0);
                         camera.rotation.set(0, -Math.PI / 2, 0);
                     }
                     view = 2;
@@ -665,7 +666,7 @@
                 <li>Linke Maustaste - Rundumsicht</li>
                 <li>R - Rotationsansicht</li>
             </ol>
-            <input type="button" id="closeInfoBox" style="float:right" value="Schlie&szlig;en"></input>
+            <input type="button" id="closeInfoBox" style="float:right" value="Schlie&szlig;en">
         </div>
     </body>
 </html>
